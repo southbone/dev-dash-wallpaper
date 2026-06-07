@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <style>
+    .flake { animation: snowfall 1.8s linear infinite; }
+    .f2 { animation-delay:.45s }
+    .f3 { animation-delay:.9s  }
+    .f4 { animation-delay:1.35s}
+    @keyframes snowfall {
+      0%   { transform:translateY(0) translateX(0);  opacity:0   }
+      20%  { opacity:.9 }
+      80%  { opacity:.7 }
+      100% { transform:translateY(20px) translateX(3px); opacity:0 }
+    }
+  </style>
+  <!-- Облако светлое -->
+  <circle cx="26" cy="24" r="10" fill="#b0bec8"/>
+  <circle cx="38" cy="26" r="8"  fill="#b0bec8"/>
+  <circle cx="18" cy="27" r="7"  fill="#b0bec8"/>
+  <rect x="16" y="25" width="30" height="8" rx="1" fill="#b0bec8"/>
+  <!-- Снежинки -->
+  <g fill="rgba(220,235,255,.9)">
+    <circle class="flake f1" cx="22" cy="40" r="2.5"/>
+    <circle class="flake f2" cx="32" cy="40" r="2.5"/>
+    <circle class="flake f3" cx="42" cy="40" r="2.5"/>
+    <circle class="flake f4" cx="27" cy="48" r="2.5"/>
+  </g>
+</svg>

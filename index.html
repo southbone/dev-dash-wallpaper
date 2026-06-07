@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ITWallpaper — Dev Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </noscript>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Фоновый canvas для анимации частиц (particles.js) -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- ═══ ВИДЖЕТ: Погода ═══ -->
+  <div class="panel" id="panel-weather">
+    <div class="panel-header" data-i18n="panels.weather"></div>
+    <div class="panel-body">
+      <div class="w-hero">
+        <img id="w-icon-svg" class="w-canvas" src="assets/weather/clear-day.svg"
+             width="68" height="68" alt="" aria-hidden="true"/>
+        <div class="w-hero-text">
+          <div class="w-temp" id="w-temp">—</div>
+          <div class="w-cond" id="w-cond"></div>
+          <div class="w-location" id="w-location"></div>
+        </div>
+      </div>
+      <div class="w-rows">
+        <div class="wrow"><span class="wlabel" data-i18n="weather.feelsLike"></span><span class="wval" id="w-feels">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.humidity"></span><span class="wval" id="w-hum">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.wind"></span><span class="wval" id="w-wind">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.sunrise"></span><span class="wval" id="w-rise">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.sunset"></span><span class="wval" id="w-set">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ВИДЖЕТ: Заметки ═══ -->
+  <div class="panel" id="panel-notes">
+    <div class="panel-header" data-i18n="panels.notes"></div>
+    <div class="panel-body notes-body">
+      <textarea id="notes-area" class="notes-area" spellcheck="false"></textarea>
+    </div>
+  </div>
+
+  <!-- ═══ ВИДЖЕТ: Часы-редактор ═══ -->
+  <div class="panel panel-clock" id="panel-clock">
+    <div class="panel-header" data-i18n="panels.clock"></div>
+    <div class="panel-body clock-body">
+      <div class="editor-wrap clock-editor" id="clock-editor">
+        <div class="editor-gutter" id="clock-gutter"></div>
+        <div class="editor-code"  id="clock-code"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ВИДЖЕТ: Тайский алфавит ═══ -->
+  <div class="panel panel-thai" id="panel-thai">
+    <div class="panel-header" data-i18n="panels.thai"></div>
+    <div class="thai-nav-bar">
+      <button class="thai-nav-btn" id="thai-prev" aria-label="previous">&#8592;</button>
+      <div class="thai-nav-label" id="thai-nav-label"></div>
+      <button class="thai-nav-btn" id="thai-next" aria-label="next">&#8594;</button>
+    </div>
+    <div class="thai-progress">
+      <div class="thai-progress-bar" id="thai-progress-bar"></div>
+    </div>
+    <div class="thai-content" id="thai-content">
+      <div class="thai-loading" data-i18n="thai.loading"></div>
+    </div>
+  </div>
+
+  <!-- ═══ ВИДЖЕТ: Горячие клавиши ═══ -->
+  <div class="panel" id="panel-hotkeys">
+    <div class="panel-header" data-i18n="panels.hotkeys"></div>
+    <div class="panel-body" id="hotkeys-body"></div>
+  </div>
+
+  <!-- ═══ ВИДЖЕТ: Терминал ═══ -->
+  <div class="panel" id="panel-terminal">
+    <div class="panel-header" data-i18n="panels.terminal"></div>
+    <div class="panel-body" id="terminal-body"></div>
+  </div>
+
+  <!-- ═══ Языковая панель + шестерёнка настроек ═══ -->
+  <div class="lang-bar" id="lang-bar">
+    <button class="lang-btn" data-lang="auto" data-i18n="lang.auto"></button>
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="ru">RU</button>
+    <span class="lang-sep">│</span>
+    <button class="settings-trigger" id="settings-trigger" aria-label="Settings" title="Settings">⚙</button>
+  </div>
+
+  <!-- ═══ Подложка настроек (клик = закрыть) ═══ -->
+  <div class="settings-overlay" id="settings-overlay"></div>
+
+  <!-- ═══ Панель настроек ═══ -->
+  <div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true">
+    <div class="settings-header">
+      <span class="settings-title">// settings</span>
+      <button class="settings-close" id="settings-close" aria-label="Close">✕</button>
+    </div>
+    <div class="settings-body">
+
+      <!-- Язык -->
+      <div class="settings-row">
+        <span class="settings-label" data-i18n="settings.language">Language</span>
+        <div class="settings-opts" data-setting="lang">
+          <button class="settings-opt" data-value="auto" data-i18n="lang.auto">Auto</button>
+          <button class="settings-opt" data-value="en">EN</button>
+          <button class="settings-opt" data-value="ru">RU</button>
+        </div>
+      </div>
+
+      <!-- Тема -->
+      <div class="settings-row">
+        <span class="settings-label" data-i18n="settings.theme">Theme</span>
+        <div class="settings-opts" data-setting="theme">
+          <button class="settings-opt" data-value="vscode">VS Code</button>
+          <button class="settings-opt" data-value="cursor">Cursor</button>
+          <button class="settings-opt" data-value="midnight">Night</button>
+        </div>
+      </div>
+
+      <!-- Формат часов -->
+      <div class="settings-row">
+        <span class="settings-label" data-i18n="settings.clockFmt">Clock</span>
+        <div class="settings-opts" data-setting="format24h">
+          <button class="settings-opt" data-value="true">24h</button>
+          <button class="settings-opt" data-value="false">12h</button>
+        </div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Видимость виджетов -->
+      <div class="settings-section-label" data-i18n="settings.panels">Show panels</div>
+
+      <div class="settings-toggle-row" data-panel="clock">
+        <span class="settings-label" data-i18n="panels.clock">// clock</span>
+        <button class="settings-toggle-btn" id="toggle-clock">●</button>
+      </div>
+      <div class="settings-toggle-row" data-panel="weather">
+        <span class="settings-label" data-i18n="panels.weather">// weather</span>
+        <button class="settings-toggle-btn" id="toggle-weather">●</button>
+      </div>
+      <div class="settings-toggle-row" data-panel="notes">
+        <span class="settings-label" data-i18n="panels.notes">// notes</span>
+        <button class="settings-toggle-btn" id="toggle-notes">●</button>
+      </div>
+      <div class="settings-toggle-row" data-panel="hotkeys">
+        <span class="settings-label" data-i18n="panels.hotkeys">// hotkeys</span>
+        <button class="settings-toggle-btn" id="toggle-hotkeys">●</button>
+      </div>
+      <div class="settings-toggle-row" data-panel="terminal">
+        <span class="settings-label" data-i18n="panels.terminal">// terminal</span>
+        <button class="settings-toggle-btn" id="toggle-terminal">●</button>
+      </div>
+      <div class="settings-toggle-row" data-panel="thai">
+        <span class="settings-label" data-i18n="panels.thai">// thai</span>
+        <button class="settings-toggle-btn" id="toggle-thai">●</button>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Внешний вид виджетов -->
+      <div class="settings-section-label" data-i18n="settings.appearance">Widget Appearance</div>
+
+      <div class="settings-appearance-row">
+        <span class="settings-label" data-i18n="panels.clock">// clock</span>
+        <div class="settings-appearance-btns">
+          <button class="settings-bg-btn" id="bg-clock" data-panel="clock" data-i18n="settings.bg">BG</button>
+        </div>
+      </div>
+      <div class="settings-appearance-row">
+        <span class="settings-label" data-i18n="panels.weather">// weather</span>
+        <div class="settings-appearance-btns">
+          <button class="settings-bg-btn" id="bg-weather" data-panel="weather" data-i18n="settings.bg">BG</button>
+        </div>
+      </div>
+      <div class="settings-appearance-row">
+        <span class="settings-label" data-i18n="panels.notes">// notes</span>
+        <div class="settings-appearance-btns">
+          <button class="settings-bg-btn" id="bg-notes" data-panel="notes" data-i18n="settings.bg">BG</button>
+        </div>
+      </div>
+      <div class="settings-appearance-row">
+        <span class="settings-label" data-i18n="panels.thai">// thai</span>
+        <div class="settings-appearance-btns">
+          <button class="settings-bg-btn" id="bg-thai" data-panel="thai" data-i18n="settings.bg">BG</button>
+        </div>
+      </div>
+      <div class="settings-appearance-row">
+        <span class="settings-label" data-i18n="panels.hotkeys">// hotkeys</span>
+        <div class="settings-appearance-btns">
+          <button class="settings-bg-btn" id="bg-hotkeys" data-panel="hotkeys" data-i18n="settings.bg">BG</button>
+        </div>
+      </div>
+      <div class="settings-appearance-row">
+        <span class="settings-label" data-i18n="panels.terminal">// terminal</span>
+        <div class="settings-appearance-btns">
+          <button class="settings-bg-btn" id="bg-terminal" data-panel="terminal" data-i18n="settings.bg">BG</button>
+        </div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Погода — город -->
+      <div class="settings-section-label" data-i18n="settings.weatherSection">Weather</div>
+
+      <div class="settings-row">
+        <span class="settings-label" data-i18n="settings.city">City</span>
+        <input type="text" id="settings-city-input" class="settings-city-input"
+               placeholder="Phuket" autocomplete="off" spellcheck="false"/>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Макет -->
+      <div class="settings-section-label" data-i18n="settings.layout">Layout</div>
+
+      <button class="settings-action-btn" id="settings-layout-btn">
+        <span data-i18n="settings.editMode">Edit Mode</span>
+      </button>
+      <button class="settings-action-btn" id="settings-reset-layout">
+        <span data-i18n="settings.reset">Reset Layout</span>
+      </button>
+      <button class="settings-action-btn settings-danger" id="settings-reset-all">
+        <span data-i18n="settings.resetAll">Reset All Settings</span>
+      </button>
+
+      <!-- Версия -->
+      <div class="settings-version" id="settings-version"></div>
+    </div>
+  </div>
+
+  <!-- ═══ Модули ITW (порядок: config → audio → weather → particles → terminal → hotkeys → typewriter) ═══ -->
+  <script src="config.js"></script>
+  <script src="audio.js"></script>
+  <script src="weather.js"></script>
+  <script src="particles.js"></script>
+  <script src="terminal.js"></script>
+  <script src="hotkeys.js"></script>
+  <script src="typewriter.js"></script>
+
+  <!-- Данные тайского алфавита (глобальная переменная THAI_ALPHABET, без fetch) -->
+  <script src="data/thaiAlphabet.js"></script>
+
+  <!-- Главный оркестратор — загружается последним -->
+  <script src="script.js"></script>
+
+</body>
+</html>

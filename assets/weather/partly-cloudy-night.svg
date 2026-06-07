@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <mask id="cr2">
+      <rect width="64" height="64" fill="white"/>
+      <circle cx="28" cy="18" r="10" fill="black"/>
+    </mask>
+    <filter id="gm"><feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <style>
+    .cld2 { animation: cld-float2 5s ease-in-out infinite; }
+    @keyframes cld-float2 { 0%,100%{transform:translateX(0)} 50%{transform:translateX(2px)} }
+  </style>
+  <!-- Серп -->
+  <g filter="url(#gm)">
+    <circle cx="22" cy="22" r="12" fill="#ccdff8" mask="url(#cr2)"/>
+  </g>
+  <circle cx="46" cy="10" r="1.5" fill="rgba(200,225,255,.7)"/>
+  <!-- Облако -->
+  <g class="cld2">
+    <circle cx="32" cy="38" r="10" fill="#6e7c8c"/>
+    <circle cx="44" cy="40" r="8"  fill="#6e7c8c"/>
+    <circle cx="22" cy="41" r="7"  fill="#6e7c8c"/>
+    <rect x="20" y="39" width="30" height="9" rx="1" fill="#6e7c8c"/>
+  </g>
+</svg>

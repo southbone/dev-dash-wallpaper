@@ -1,0 +1,775 @@
+/* =============================================================================
+   ITWallpaper — style.css  v1.0.0
+   Минималистичный дашборд разработчика для Wallpaper Engine.
+
+   Макет: все виджеты position:fixed, дефолтные позиции через ID-правила.
+   Перетаскивание: JS записывает inline left/top, CSS-дефолт — при сбросе.
+============================================================================= */
+
+/* ── Шрифты ──────────────────────────────────────────────────────────────────
+   Стратегия загрузки (три уровня):
+   1. Локальные файлы assets/fonts/*.woff2 — быстро, работает офлайн.
+      Установка: скачай JetBrains Mono (OFL, бесплатно):
+        https://www.jetbrains.com/lp/mono/
+      Положи в assets/fonts/:
+        JetBrainsMono-Regular.woff2  (weight 400)
+        JetBrainsMono-Medium.woff2   (weight 500)
+   2. Google Fonts CDN (async, тег <link> в index.html) — при наличии интернета.
+   3. Системные моноширинные: Cascadia Code / Consolas / monospace — всегда.
+   Если файлы в assets/fonts/ отсутствуют — @font-face молча падает,
+   браузер переходит к следующему источнику. Внешний вид корректный.
+──────────────────────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('assets/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('assets/fonts/JetBrainsMono-Medium.woff2') format('woff2');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+
+/* ── Дизайн-токены (тема vscode — дефолт) ── */
+:root {
+  /* Фон */
+  --bg-1: #1e1f26; --bg-2: #22242d; --bg-3: #252733;
+  /* Панели */
+  --panel-bg:     rgba(24, 26, 35, 0.82);
+  --panel-border: rgba(255,255,255,0.06);
+  --panel-shine:  rgba(255,255,255,0.02);
+  /* Текст */
+  --text:   #c8ccd4;
+  --muted:  #50596b;
+  --faint:  #2c3040;
+  /* Токены синтаксиса */
+  --c-kw:   #c792ea; --c-var:  #82aaff; --c-prop: #9cdcfe;
+  --c-str:  #ce9178; --c-num:  #b5cea8; --c-pct:  #546075;
+  --c-op:   #89ddff; --c-cmt:  #3c4452;
+  /* Акцент */
+  --accent: #56d4dd; --accent-rgb: 86,212,221;
+  /* Шрифт: цепочка fallback */
+  --mono: 'JetBrains Mono', 'Cascadia Code', 'Cascadia Mono', 'Fira Code', Consolas, 'Courier New', monospace;
+  /* Геометрия панелей */
+  --panel-w:   clamp(220px, 18.5vw, 420px);
+  --panel-h:   clamp(260px, 36vh,   580px);
+  --panel-r:   11px;
+  --panel-pad: clamp(12px, 1.1vw, 22px);
+  --edge-x:    3.2vw;
+  --edge-y:    4.2vh;
+  --fs:        clamp(10.5px, 0.83vw, 17px);
+  /* Тени панелей — переопределяются в каждой теме */
+  --shadow-panel: 0 20px 60px rgba(0,0,0,.50), 0 4px 16px rgba(0,0,0,.30);
+  --shadow-hover: 0 24px 68px rgba(0,0,0,.55), 0 4px 20px rgba(0,0,0,.34);
+  --shadow-drag:  0 28px 64px rgba(0,0,0,.65);
+}
+
+/* ── Тема Cursor (тёмно-синяя, Catppuccin Mocha) ── */
+[data-theme="cursor"] {
+  --bg-1: #1a1b26; --bg-2: #1e1f2e; --bg-3: #22243a;
+  --panel-bg:     rgba(22, 23, 40, 0.88);
+  --panel-border: rgba(100, 120, 220, 0.12);
+  --panel-shine:  rgba(100, 120, 220, 0.04);
+  --text:   #cdd6f4; --muted: #6c7086; --faint: #313244;
+  --c-kw:   #cba6f7; --c-var: #89dceb; --c-prop: #89b4fa;
+  --c-str:  #a6e3a1; --c-num: #fab387; --c-pct:  #585b70;
+  --c-op:   #94e2d5; --c-cmt: #45475a;
+  --accent: #7b8cde; --accent-rgb: 123,140,222;
+  /* Тени Cursor: чуть насыщеннее, синеватый подтон */
+  --shadow-panel: 0 20px 60px rgba(0,0,10,.58), 0 4px 16px rgba(0,0,10,.36);
+  --shadow-hover: 0 24px 72px rgba(0,0,10,.63), 0 4px 20px rgba(0,0,10,.40);
+  --shadow-drag:  0 28px 68px rgba(0,0,10,.72);
+}
+
+/* ── Тема Midnight (глубокий тёмно-фиолетовый) ── */
+[data-theme="midnight"] {
+  --bg-1: #0d0e1a; --bg-2: #111222; --bg-3: #141628;
+  --panel-bg:     rgba(8, 9, 20, 0.90);
+  --panel-border: rgba(120, 90, 200, 0.10);
+  --panel-shine:  rgba(120, 90, 200, 0.03);
+  --text:   #c8c8e8; --muted: #4a4a6e; --faint: #1e1e36;
+  --c-kw:   #d4a8ff; --c-var: #94e2d5; --c-prop: #a0c4ff;
+  --c-str:  #c9e8a0; --c-num: #ffd580; --c-pct:  #4a4a6e;
+  --c-op:   #88d9d9; --c-cmt: #3e3e5e;
+  --accent: #b09aff; --accent-rgb: 176,154,255;
+  /* Тени Midnight: максимально тёмные, фиолетовый подтон */
+  --shadow-panel: 0 20px 60px rgba(5,0,20,.68), 0 4px 16px rgba(5,0,20,.46);
+  --shadow-hover: 0 24px 72px rgba(5,0,20,.74), 0 4px 20px rgba(5,0,20,.50);
+  --shadow-drag:  0 28px 72px rgba(5,0,20,.84);
+}
+
+/* ── Портретная ориентация ── */
+@media (orientation: portrait) {
+  :root {
+    --panel-w: clamp(150px, 27vw, 280px);
+    --panel-h: clamp(180px, 22vh, 340px);
+    --edge-x:  2.5vw; --edge-y: 2.5vh;
+    --fs:      clamp(9px, 1.3vw, 14px);
+  }
+}
+
+/* ── Сброс ── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; }
+* { user-select:none; -webkit-user-select:none; }
+
+/* ── Фон страницы (без grid — все виджеты fixed) ── */
+body {
+  font-family: var(--mono);
+  font-size: var(--fs);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background:
+    radial-gradient(ellipse 130% 90% at 12% 8%,   rgba(var(--accent-rgb),.042) 0%, transparent 48%),
+    radial-gradient(ellipse 110% 80% at 88% 92%,  rgba(185,150,255,.03)         0%, transparent 48%),
+    linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-3) 100%);
+}
+
+/* =============================================================================
+   ВИДЖЕТ — базовые стили
+   Все панели: position:fixed. Дефолтная позиция задана правилами ниже (#id).
+   Drag переопределяет left/top/transform через inline style.
+============================================================================= */
+.panel {
+  position: fixed;
+  width: var(--panel-w);
+  height: var(--panel-h);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--panel-r);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  /* Используем CSS-переменные тени — меняются с темой */
+  box-shadow:
+    0 0 0 1px var(--panel-shine) inset,
+    var(--shadow-panel);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1;
+  /* Анимация входа: fade + slide */
+  opacity: 0;
+  animation: panel-in-up .55s ease forwards;
+  transition: box-shadow .35s ease;
+}
+.panel:hover {
+  box-shadow:
+    0 0 0 1px rgba(var(--accent-rgb),.10) inset,
+    var(--shadow-hover);
+}
+
+/* ── Дефолтные позиции угловых виджетов ── */
+#panel-weather  { left: var(--edge-x); top: var(--edge-y);                    animation-delay: .05s; }
+#panel-notes    { right: var(--edge-x); top: var(--edge-y);                   animation-delay: .10s; }
+#panel-hotkeys  { left: var(--edge-x); bottom: var(--edge-y);                 animation-delay: .15s; }
+#panel-terminal { right: var(--edge-x); bottom: var(--edge-y);                animation-delay: .20s; }
+
+/* Центральные виджеты: fade only (transform используется для центрирования) */
+#panel-clock {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, calc(-100% - 1.5vh));
+  width: auto;
+  min-width: clamp(240px, 22vw, 460px);
+  height: auto;
+  overflow: visible;
+  animation: panel-in-fade .55s .25s ease forwards;
+}
+#panel-thai {
+  left: 50%;
+  top: calc(50% + 1.5vh);
+  transform: translateX(-50%);
+  width: clamp(280px, 30vw, 540px);
+  height: auto;
+  animation: panel-in-fade .55s .30s ease forwards;
+}
+
+@keyframes panel-in-up  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes panel-in-fade { from { opacity:0; } to { opacity:1; } }
+
+/* ── Заголовок и тело панели ── */
+.panel-header {
+  flex: 0 0 auto;
+  padding: calc(var(--panel-pad)*.7) var(--panel-pad);
+  font-size: .76em; color: var(--c-cmt);
+  letter-spacing: .05em; font-style: italic;
+  border-bottom: 1px solid var(--panel-border);
+  user-select: none; white-space: nowrap;
+}
+.panel-body {
+  flex: 1 1 auto; min-height: 0;
+  padding: var(--panel-pad);
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: var(--faint) transparent;
+}
+.panel-body::-webkit-scrollbar       { width:3px; }
+.panel-body::-webkit-scrollbar-track { background:transparent; }
+.panel-body::-webkit-scrollbar-thumb { background:var(--faint); border-radius:2px; }
+
+/* =============================================================================
+   ПОГОДА
+============================================================================= */
+.w-hero { display:flex; align-items:center; gap:.85em; padding-bottom:1em; margin-bottom:1em; border-bottom:1px solid var(--faint); }
+.w-canvas { flex-shrink:0; display:block; width:68px; height:68px; transition:opacity .25s ease; }
+.w-hero-text { flex:1; min-width:0; }
+.w-temp { font-size:2.1em; font-weight:500; color:var(--text); letter-spacing:-.02em; line-height:1; margin-bottom:.16em; }
+.w-cond { font-size:.81em; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.w-rows { display:flex; flex-direction:column; }
+.wrow { display:flex; justify-content:space-between; align-items:center; padding:.30em 0; border-bottom:1px solid var(--faint); }
+.wrow:last-child { border-bottom:none; }
+.wlabel { color:var(--muted); font-size:.80em; }
+.wval   { color:var(--text);  font-size:.80em; }
+.w-location { font-size:.70em; color:var(--c-cmt); letter-spacing:.03em; margin-top:.2em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* =============================================================================
+   ЗАМЕТКИ
+============================================================================= */
+.notes-body { display:flex; flex-direction:column; padding:calc(var(--panel-pad)*.6) var(--panel-pad) var(--panel-pad); }
+.notes-area {
+  flex:1; min-height:0; width:100%;
+  background:transparent; border:none; outline:none; resize:none;
+  font-family:var(--mono); font-size:.87em; color:var(--text); line-height:1.68;
+  caret-color:var(--accent);
+  scrollbar-width:thin; scrollbar-color:var(--faint) transparent;
+  user-select:text; -webkit-user-select:text; cursor:text;
+}
+.notes-area::placeholder { color:var(--c-cmt); }
+
+/* =============================================================================
+   ЧАСЫ-РЕДАКТОР
+============================================================================= */
+.clock-body {
+  padding: var(--panel-pad);
+  overflow: visible;
+}
+.clock-editor {
+  font-size: clamp(14px, 1.35vw, 28px);
+  line-height: 1.76;
+}
+.clock-editor .editor-gutter { min-width: 2em; padding-right: .7em; }
+
+/* =============================================================================
+   РЕДАКТОР / TYPEWRITER (typewriter.js)
+============================================================================= */
+.editor-wrap {
+  display: flex;
+  font-family: var(--mono);
+  font-size: clamp(11px, 1.1vw, 18px);
+  line-height: 1.72;
+  white-space: pre;
+  letter-spacing: .01em;
+  user-select: none;
+}
+.editor-gutter {
+  flex-shrink: 0; min-width: 2.4em;
+  color: var(--c-cmt); text-align: right;
+  padding-right: .8em; opacity: .4; user-select: none;
+}
+.editor-code { flex: 1; min-width: 0; }
+.gln   { display: block; font-size: .85em; }
+.cline { display: block; }
+
+/* Токены подсветки typewriter */
+.tk-kw      { color: var(--c-kw);   font-weight: 500; }
+.tk-var     { color: var(--c-var);  }
+.tk-prop    { color: var(--c-prop); }
+.tk-punct   { color: var(--c-pct);  }
+.tk-comment { color: var(--c-cmt);  }
+.tk-str     { color: var(--c-str);  }
+.tk-num     { color: var(--c-num);  }
+
+/* Токены clock (устаревшие, совместимость) */
+.c-kw   { color:var(--c-kw);   font-weight:500; }
+.c-var  { color:var(--c-var);  }
+.c-prop { color:var(--c-prop); }
+.c-str  { color:var(--c-str);  }
+.c-num  { color:var(--c-num);  }
+.c-pct  { color:var(--c-pct);  }
+.c-op   { color:var(--c-op);   }
+
+/* Вспышки при изменении значений */
+@keyframes flash-tk-num { 0% { color:#d4d8e0; } 100% { color:var(--c-num); } }
+@keyframes flash-tk-str { 0% { color:#d4d8e0; } 100% { color:var(--c-str); } }
+.tk-num.flash { animation: flash-tk-num .30s ease forwards; }
+.tk-str.flash { animation: flash-tk-str .30s ease forwards; }
+
+/* Мигающий курсор */
+.caret {
+  display: inline-block; width: .52em; height: .88em;
+  vertical-align: text-bottom;
+  background: var(--accent); box-shadow: 0 0 8px rgba(var(--accent-rgb),.75);
+  animation: blink 1.05s steps(1) infinite;
+}
+@keyframes blink { 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
+
+/* =============================================================================
+   ТАЙСКИЙ АЛФАВИТ (внутри .panel#panel-thai)
+============================================================================= */
+.panel-thai { overflow: hidden; }
+
+/* Навигационная строка */
+.thai-nav-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .45em .9em;
+}
+.thai-nav-btn {
+  background: transparent; border: none;
+  color: var(--muted); font-family: var(--mono);
+  font-size: 1em; cursor: pointer;
+  padding: .2em .55em; border-radius: 4px;
+  transition: color .2s, background .2s;
+  pointer-events: all;
+}
+.thai-nav-btn:hover { color: var(--accent); background: rgba(var(--accent-rgb),.08); }
+
+.thai-nav-label {
+  font-size: .78em; color: var(--muted);
+  font-style: italic; letter-spacing: .04em; transition: color .2s;
+}
+
+/* Прогресс-бар */
+.thai-progress { height: 2px; background: var(--faint); overflow: hidden; }
+.thai-progress-bar {
+  height: 100%; background: var(--accent); width: 0%;
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 6px rgba(var(--accent-rgb),.4);
+}
+
+/* Содержимое урока */
+.thai-content {
+  padding: .85em 1.1em 1em;
+  display: flex; flex-direction: column; gap: .55em;
+  max-height: clamp(180px, 28vh, 340px);
+  overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--faint) transparent;
+}
+.thai-loading { font-size:.80em; color:var(--muted); text-align:center; padding:1em 0; }
+
+/* Главная буква */
+.thai-letter-row { display: flex; align-items: center; gap: 1em; padding-bottom: .1em; }
+.thai-letter {
+  font-size: 3.4em; line-height: 1;
+  color: var(--accent); font-weight: 500; flex-shrink: 0;
+  text-shadow: 0 0 24px rgba(var(--accent-rgb),.45), 0 0 8px rgba(var(--accent-rgb),.20);
+  letter-spacing: -.01em;
+}
+.thai-letter-info { display:flex; flex-direction:column; gap:.18em; }
+.thai-letter-name { font-size:.92em; color:var(--text); font-weight:500; }
+.thai-transcriptions { display:flex; gap:.7em; align-items:baseline; }
+.thai-tr-ru { font-size:.80em; color:var(--c-str); }
+.thai-tr-pk { font-size:.80em; color:#e5a86b; }
+.thai-tr-en { font-size:.80em; color:var(--c-var); }
+.thai-meaning { font-size:.76em; color:var(--muted); font-style:italic; }
+
+/* Разделитель */
+.thai-divider { height:1px; background:var(--faint); margin:.1em 0; }
+
+/* Метка секции */
+.thai-section-label { font-size:.68em; color:var(--c-cmt); letter-spacing:.08em; font-style:italic; margin-bottom:.1em; }
+
+/* Слоги */
+.thai-syllables { display:grid; grid-template-columns:1.4em 1fr 1fr .9fr 1.5fr; gap:.2em .3em; align-items:center; }
+.thai-syllable, .thai-syl-head { display:contents; }
+.thai-syl-head > span { font-size:.62em; color:var(--c-cmt); font-style:italic; letter-spacing:.04em; padding-bottom:.15em; }
+.thai-syl-th  { font-size:.88em; color:var(--text); }
+.thai-syl-ru  { font-size:.72em; color:var(--c-str); }
+.thai-syl-pk  { font-size:.72em; color:#e5a86b; }
+.thai-syl-en  { font-size:.72em; color:var(--c-var); }
+.thai-syl-ex  { font-size:.72em; color:var(--muted); font-style:italic; }
+.thai-syl-ex-pk { color:#e5a86b; font-style:normal; }
+
+/* Слова */
+.thai-words { display:flex; flex-direction:column; gap:.22em; }
+.thai-word, .thai-word-head { display:grid; grid-template-columns:1.6em 1fr 1fr .9fr 1.2fr; gap:.3em; align-items:center; }
+.thai-word-head > span { font-size:.62em; color:var(--c-cmt); font-style:italic; letter-spacing:.04em; padding-bottom:.1em; }
+.thai-word { padding:.18em .1em; border-radius:3px; transition:background .2s; }
+.thai-word:hover { background:rgba(var(--accent-rgb),.04); }
+.thai-word-th  { font-size:.92em; color:var(--text);  }
+.thai-word-ru  { font-size:.75em; color:var(--c-str); }
+.thai-word-pk  { font-size:.75em; color:#e5a86b; }
+.thai-word-en  { font-size:.75em; color:var(--c-var); }
+.thai-word-tr  { font-size:.75em; color:var(--muted); }
+
+/* Фразы */
+.thai-phrases { display:flex; flex-direction:column; gap:.35em; }
+.thai-phrase { display:flex; flex-direction:column; gap:.1em; padding:.3em .4em; border-left:2px solid var(--faint); border-radius:0 3px 3px 0; transition:border-color .2s; }
+.thai-phrase:hover { border-left-color:rgba(var(--accent-rgb),.4); }
+.thai-phrase-th { font-size:.88em; color:var(--text); }
+.thai-phrase-subs { display:flex; gap:.7em; }
+.thai-phrase-ru { font-size:.72em; color:var(--c-str); }
+.thai-phrase-pk { font-size:.72em; color:#e5a86b; }
+.thai-phrase-en { font-size:.72em; color:var(--c-var); }
+.thai-phrase-tr { font-size:.72em; color:var(--muted); font-style:italic; }
+
+/* =============================================================================
+   ТЕРМИНАЛ — шпаргалка команд (terminal.js)
+============================================================================= */
+.tm-group { margin-bottom: .55em; }
+.tm-title {
+  font-size: .70em; color: var(--c-cmt); letter-spacing: .09em;
+  font-style: italic; padding-bottom: .28em; margin-bottom: .12em;
+  border-bottom: 1px solid var(--faint); user-select: none;
+}
+.tm-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .26em .3em; border-radius: 4px; gap: .5em;
+  transition: background .2s ease;
+}
+.tm-row:hover  { background: rgba(var(--accent-rgb),.05); }
+.tm-row.tm-hot { background: rgba(var(--accent-rgb),.09); }
+.tm-cmd  { color: var(--c-str);  font-size: .80em; white-space: nowrap; flex-shrink: 0; }
+.tm-desc { color: var(--muted);  font-size: .76em; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* =============================================================================
+   ГОРЯЧИЕ КЛАВИШИ (hotkeys.js)
+============================================================================= */
+.hk-group { margin-bottom: .55em; }
+.hk-title {
+  font-size: .70em; color: var(--c-cmt); letter-spacing: .09em;
+  font-style: italic; padding-bottom: .28em; margin-bottom: .12em;
+  border-bottom: 1px solid var(--faint); user-select: none;
+}
+.hk-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .26em .3em; border-radius: 4px; gap: .5em;
+  transition: background .2s ease;
+}
+.hk-row:hover  { background: rgba(var(--accent-rgb),.05); }
+.hk-row.hk-hot { background: rgba(var(--accent-rgb),.09); }
+.hk-key  { color: var(--c-prop); font-size: .80em; white-space: nowrap; flex-shrink: 0; }
+.hk-desc { color: var(--muted);  font-size: .76em; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* =============================================================================
+   ЧАСТИЦЫ
+============================================================================= */
+#particles-canvas {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+
+/* =============================================================================
+   ЯЗЫКОВАЯ ПАНЕЛЬ + ШЕСТЕРЁНКА
+============================================================================= */
+.lang-bar {
+  position: fixed; bottom: 1.4vh; left: 50%;
+  transform: translateX(-50%);
+  display: flex; align-items: center; gap: .3em;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px; padding: .28em .45em;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0,0,0,.35);
+}
+.lang-btn {
+  background: transparent; border: none;
+  color: var(--muted); font-family: var(--mono);
+  font-size: .72em; padding: .22em .65em;
+  border-radius: 14px; cursor: pointer;
+  letter-spacing: .04em; transition: color .2s, background .2s;
+}
+.lang-btn:hover  { color:var(--text);   background:rgba(255,255,255,.06); }
+.lang-btn.active { color:var(--accent); background:rgba(var(--accent-rgb),.12); }
+.lang-sep { color: var(--faint); font-size: .7em; opacity: .6; }
+.settings-trigger {
+  background: transparent; border: none;
+  color: var(--muted); font-family: var(--mono);
+  font-size: .85em; padding: .22em .5em;
+  border-radius: 14px; cursor: pointer;
+  transition: color .2s, background .2s;
+}
+.settings-trigger:hover { color:var(--accent); background:rgba(var(--accent-rgb),.08); }
+
+/* =============================================================================
+   ПАНЕЛЬ НАСТРОЕК
+============================================================================= */
+.settings-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  z-index: 90; opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
+}
+.settings-overlay.active { opacity: 1; pointer-events: auto; }
+
+.settings-panel {
+  position: fixed; left: 50%; top: 50%;
+  transform: translate(-50%, calc(-50% + 16px));
+  z-index: 91;
+  width: clamp(280px, 24vw, 380px);
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--panel-r);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 0 0 1px var(--panel-shine) inset, 0 32px 80px rgba(0,0,0,.65);
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.settings-panel.active {
+  opacity: 1; pointer-events: auto;
+  transform: translate(-50%, -50%);
+}
+.settings-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .6em var(--panel-pad);
+  border-bottom: 1px solid var(--panel-border);
+}
+.settings-title { font-size: .78em; color: var(--c-cmt); letter-spacing: .05em; font-style: italic; }
+.settings-close {
+  background: transparent; border: none; color: var(--muted);
+  font-size: .9em; cursor: pointer; padding: .1em .3em;
+  border-radius: 3px; font-family: var(--mono);
+  transition: color .2s, background .2s;
+}
+.settings-close:hover { color: var(--text); background: rgba(255,255,255,.06); }
+
+.settings-body {
+  padding: .7em var(--panel-pad) var(--panel-pad);
+  display: flex; flex-direction: column; gap: .6em;
+  max-height: 72vh; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--faint) transparent;
+}
+
+/* Строка настройки */
+.settings-row {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: .5em;
+}
+.settings-label {
+  font-size: .78em; color: var(--muted);
+  white-space: nowrap; flex-shrink: 0;
+}
+
+/* Группа кнопок-опций */
+.settings-opts { display: flex; gap: .2em; }
+.settings-opt {
+  background: transparent; border: 1px solid var(--faint);
+  color: var(--muted); font-family: var(--mono);
+  font-size: .72em; padding: .2em .55em; border-radius: 4px;
+  cursor: pointer; transition: all .15s ease;
+}
+.settings-opt:hover { border-color: var(--muted); color: var(--text); }
+.settings-opt.active {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(var(--accent-rgb),.12);
+}
+
+/* Разделитель */
+.settings-divider { height: 1px; background: var(--faint); margin: .1em 0; }
+
+/* Метка секции */
+.settings-section-label {
+  font-size: .68em; color: var(--c-cmt);
+  letter-spacing: .08em; font-style: italic;
+}
+
+/* Строка переключателя виджета */
+.settings-toggle-row {
+  display: flex; align-items: center;
+  justify-content: space-between; padding: .15em 0;
+}
+.settings-toggle-row .settings-label { color: var(--text); }
+.settings-toggle-btn {
+  background: transparent; border: 1px solid var(--faint);
+  color: var(--muted); font-family: var(--mono);
+  font-size: .80em; width: 2.4em; height: 1.5em;
+  border-radius: 3px; cursor: pointer;
+  transition: all .15s ease;
+  display: flex; align-items: center; justify-content: center;
+}
+.settings-toggle-btn.active {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(var(--accent-rgb),.12);
+}
+
+/* Кнопки действий */
+.settings-action-btn {
+  width: 100%; background: transparent;
+  border: 1px solid var(--faint); color: var(--muted);
+  font-family: var(--mono); font-size: .75em;
+  padding: .4em; border-radius: 5px;
+  cursor: pointer; letter-spacing: .03em;
+  transition: all .15s ease; text-align: center;
+}
+.settings-action-btn:hover { border-color: var(--muted); color: var(--text); }
+.settings-action-btn.active {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(var(--accent-rgb),.10);
+}
+.settings-danger:hover { border-color: #e06c75; color: #e06c75; }
+
+/* Версия */
+.settings-version {
+  font-size: .65em; color: var(--c-cmt);
+  text-align: center; padding-top: .2em; letter-spacing: .06em;
+}
+
+/* =============================================================================
+   РЕЖИМ РЕДАКТИРОВАНИЯ МАКЕТА
+============================================================================= */
+body.layout-edit .panel {
+  cursor: grab;
+  outline: 1px dashed rgba(var(--accent-rgb),.35);
+}
+body.layout-edit .panel:hover {
+  outline-color: rgba(var(--accent-rgb),.65);
+  /* Hover в режиме редакт. — тоже через переменную темы */
+  box-shadow:
+    0 0 0 1px rgba(var(--accent-rgb),.15) inset,
+    var(--shadow-hover);
+}
+body.layout-edit .panel .panel-header {
+  cursor: grab;
+}
+/* Состояние активного перетаскивания */
+body.is-dragging { cursor: grabbing !important; }
+body.is-dragging * { cursor: grabbing !important; pointer-events: none; }
+body.is-dragging .panel.dragging { pointer-events: auto; }
+.panel.dragging {
+  cursor: grabbing;
+  outline: 1px solid var(--accent) !important;
+  /* Тень при перетаскивании — тоже через переменную темы */
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb),.3), var(--shadow-drag) !important;
+  z-index: 50;
+}
+/* Индикатор режима */
+body.layout-edit::after {
+  content: 'LAYOUT EDIT — DRAG  /  RESIZE WIDGETS';
+  position: fixed; top: 1vh; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono); font-size: .62em;
+  color: var(--accent); letter-spacing: .2em;
+  opacity: .55; pointer-events: none; z-index: 200;
+}
+
+/* =============================================================================
+   RESPONSIVE BREAKPOINTS
+   1920×1080 → базовые переменные
+   2560×1440 → 1440p
+   3440×1440 → ultrawide
+   3840×2160 → 4K
+============================================================================= */
+@media (min-width: 2560px) {
+  :root {
+    --panel-w:   clamp(260px, 15.5vw, 480px);
+    --panel-h:   clamp(300px, 35vh,   640px);
+    --fs:        clamp(12px,  0.72vw,  20px);
+    --panel-pad: clamp(14px,  1.2vw,   26px);
+    --edge-x: 3.0vw; --edge-y: 4.0vh;
+  }
+  .clock-editor { font-size: clamp(16px, 1.15vw, 30px); }
+  .thai-letter  { font-size: 3.6em; }
+  #panel-thai   { width: clamp(300px, 28vw, 560px); }
+}
+@media (min-width: 3440px) {
+  :root {
+    --panel-w:   clamp(280px, 13.5vw, 500px);
+    --panel-h:   clamp(320px, 36vh,   660px);
+    --fs:        clamp(12px,  0.60vw,  20px);
+    --edge-x: 2.8vw;
+  }
+  .clock-editor { font-size: clamp(16px, 1.0vw, 30px); }
+  #panel-thai   { width: clamp(320px, 24vw, 580px); }
+}
+@media (min-width: 3800px) {
+  :root {
+    --panel-w:   clamp(320px, 12.0vw, 560px);
+    --panel-h:   clamp(360px, 34vh,   720px);
+    --fs:        clamp(14px,  0.52vw,  24px);
+    --panel-pad: clamp(16px,  1.1vw,   30px);
+    --panel-r: 14px; --edge-x: 2.8vw; --edge-y: 3.8vh;
+  }
+  .clock-editor { font-size: clamp(20px, 0.90vw, 36px); }
+  .thai-letter  { font-size: 4em; }
+  #panel-thai   { width: clamp(360px, 22vw, 620px); }
+}
+
+/* =============================================================================
+   RESIZE HANDLE — visible only in layout edit mode
+============================================================================= */
+.resize-handle {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 22px; height: 22px;
+  cursor: se-resize;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+  z-index: 5;
+}
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  right: 5px; bottom: 5px;
+  width: 0; height: 0;
+  border-style: solid;
+  border-width: 0 0 9px 9px;
+  border-color: transparent transparent rgba(var(--accent-rgb),.55) transparent;
+  transition: border-color .2s;
+}
+body.layout-edit .resize-handle {
+  opacity: 1;
+  pointer-events: auto;
+}
+body.layout-edit .resize-handle:hover::after {
+  border-color: transparent transparent rgba(var(--accent-rgb),1) transparent;
+}
+.panel.resizing {
+  cursor: se-resize;
+  outline: 1px solid var(--accent) !important;
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb),.3), var(--shadow-drag) !important;
+  z-index: 50;
+  user-select: none;
+}
+body.is-resizing { cursor: se-resize !important; }
+body.is-resizing * { cursor: se-resize !important; pointer-events: none; }
+body.is-resizing .panel.resizing { pointer-events: auto; }
+
+/* =============================================================================
+   PANEL NO-BACKGROUND VARIANT
+============================================================================= */
+.panel--no-bg {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+/* Keep border visible in no-bg mode */
+.panel--no-bg { border-color: rgba(var(--accent-rgb),.18) !important; }
+
+/* =============================================================================
+   SETTINGS — Widget Appearance section
+============================================================================= */
+.settings-appearance-row {
+  display: flex; align-items: center;
+  justify-content: space-between; padding: .15em 0;
+}
+.settings-appearance-row .settings-label { color: var(--text); }
+.settings-appearance-btns { display: flex; gap: .3em; }
+.settings-bg-btn {
+  background: transparent; border: 1px solid var(--faint);
+  color: var(--muted); font-family: var(--mono);
+  font-size: .68em; padding: .15em .42em; border-radius: 3px;
+  cursor: pointer; letter-spacing: .04em;
+  transition: all .15s ease; min-width: 2.2em; text-align: center;
+}
+.settings-bg-btn:hover { border-color: var(--muted); color: var(--text); }
+.settings-bg-btn.active {
+  border-color: var(--accent); color: var(--accent);
+  background: rgba(var(--accent-rgb),.12);
+}
+
+/* =============================================================================
+   SETTINGS — City input
+============================================================================= */
+.settings-city-input {
+  background: transparent; border: 1px solid var(--faint);
+  color: var(--text); font-family: var(--mono); font-size: .72em;
+  padding: .25em .5em; border-radius: 4px; outline: none;
+  width: 9em; transition: border-color .15s ease;
+  user-select: text; -webkit-user-select: text;
+}
+.settings-city-input:focus { border-color: var(--accent); }
+.settings-city-input::placeholder { color: var(--c-cmt); }

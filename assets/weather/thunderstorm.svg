@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <filter id="bolt-glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    .bolt  { animation: flash 2s ease-in-out infinite; }
+    .bdrop { animation: fall-rain 1s linear infinite; }
+    .bd2   { animation-delay:.3s }
+    .bd3   { animation-delay:.6s }
+    @keyframes flash {
+      0%,45%,55%,100%{opacity:.7} 50%{opacity:1;filter:drop-shadow(0 0 6px #ffe040)}
+    }
+    @keyframes fall-rain {
+      0%  {transform:translateY(0); opacity:0}
+      20% {opacity:.6}
+      100%{transform:translateY(16px);opacity:0}
+    }
+  </style>
+  <!-- Тёмное облако -->
+  <circle cx="26" cy="22" r="12" fill="#4a5668"/>
+  <circle cx="40" cy="25" r="10" fill="#4a5668"/>
+  <circle cx="16" cy="27" r="8"  fill="#4a5668"/>
+  <rect x="14" y="25" width="36" height="10" rx="1" fill="#4a5668"/>
+  <!-- Дождь -->
+  <g fill="none" stroke="rgba(100,160,255,.6)" stroke-width="1.5" stroke-linecap="round">
+    <line class="bdrop bd1" x1="20" y1="40" x2="18" y2="47"/>
+    <line class="bdrop bd3" x1="44" y1="40" x2="42" y2="47"/>
+  </g>
+  <!-- Молния -->
+  <polygon class="bolt" points="34,35 28,47 33,47 29,57 40,42 34,42 38,35"
+    fill="#ffe040" filter="url(#bolt-glow)"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <style>
+    .cloud-f { animation: float 5s ease-in-out infinite; transform-origin:32px 32px; }
+    .cloud-b { animation: float 6s ease-in-out infinite reverse; transform-origin:32px 36px; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)} }
+  </style>
+  <g class="cloud-b" opacity=".55">
+    <circle cx="34" cy="34" r="10" fill="#8a96a4"/>
+    <circle cx="46" cy="36" r="8"  fill="#8a96a4"/>
+    <circle cx="24" cy="37" r="7"  fill="#8a96a4"/>
+    <rect x="22" y="35" width="30" height="9" rx="1" fill="#8a96a4"/>
+  </g>
+  <g class="cloud-f">
+    <circle cx="28" cy="26" r="11" fill="#9aa8b8"/>
+    <circle cx="42" cy="29" r="9"  fill="#9aa8b8"/>
+    <circle cx="18" cy="30" r="8"  fill="#9aa8b8"/>
+    <rect x="16" y="28" width="34" height="10" rx="1" fill="#9aa8b8"/>
+  </g>
+</svg>

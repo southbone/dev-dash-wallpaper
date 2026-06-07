@@ -1,0 +1,129 @@
+{
+  "title": "ITWallpaper — Dev Desk",
+  "description": "VS Code / Cursor-inspired live developer dashboard for Wallpaper Engine. Features a live clock, real weather, terminal command cheatsheet, hotkeys reference, and Thai alphabet lessons. Fully customizable themes and layout.",
+  "type": "web",
+  "file": "index.html",
+  "preview": "preview.jpg",
+  "tags": ["Abstract", "Minimalistic"],
+  "general": {
+    "properties": {
+      "schemecolor": {
+        "order": 0,
+        "text": "Accent color",
+        "type": "color",
+        "value": "0.337 0.831 0.866"
+      },
+      "theme": {
+        "order": 1,
+        "text": "Theme",
+        "type": "combo",
+        "value": "vscode",
+        "options": [
+          { "label": "VS Code Dark", "value": "vscode" },
+          { "label": "Cursor",       "value": "cursor"  },
+          { "label": "Midnight",     "value": "midnight" }
+        ]
+      },
+      "format24h": {
+        "order": 2,
+        "text": "24-hour clock",
+        "type": "bool",
+        "value": true
+      },
+      "city": {
+        "order": 10,
+        "text": "Weather city",
+        "type": "textinput",
+        "value": "Phuket"
+      },
+      "weatherKey": {
+        "order": 11,
+        "text": "OpenWeatherMap API key (optional)",
+        "type": "textinput",
+        "value": ""
+      },
+      "weatherUnits": {
+        "order": 12,
+        "text": "Temperature units",
+        "type": "combo",
+        "value": "metric",
+        "options": [
+          { "label": "Celsius (°C)",    "value": "metric"   },
+          { "label": "Fahrenheit (°F)", "value": "imperial" }
+        ]
+      },
+      "modTypewriter": {
+        "order": 40,
+        "text": "Clock: typewriter intro",
+        "type": "bool",
+        "value": true
+      },
+      "modParticles": {
+        "order": 41,
+        "text": "Show: particles",
+        "type": "bool",
+        "value": true
+      },
+      "audioEnabled": {
+        "order": 50,
+        "text": "Audio reactive",
+        "type": "bool",
+        "value": true
+      },
+      "audioSensitivity": {
+        "order": 51,
+        "text": "Audio sensitivity",
+        "type": "slider",
+        "value": 1.0,
+        "min": 0.2,
+        "max": 3.0,
+        "step": 0.1
+      },
+      "particleDensity": {
+        "order": 52,
+        "text": "Particle density",
+        "type": "slider",
+        "value": 1.0,
+        "min": 0.2,
+        "max": 2.0,
+        "step": 0.1
+      },
+      "showClock": {
+        "order": 60,
+        "text": "Show: clock",
+        "type": "bool",
+        "value": true
+      },
+      "showWeather": {
+        "order": 61,
+        "text": "Show: weather panel",
+        "type": "bool",
+        "value": true
+      },
+      "showNotes": {
+        "order": 62,
+        "text": "Show: notes panel",
+        "type": "bool",
+        "value": true
+      },
+      "showHotkeys": {
+        "order": 63,
+        "text": "Show: hotkeys panel",
+        "type": "bool",
+        "value": true
+      },
+      "showTerminal": {
+        "order": 64,
+        "text": "Show: terminal panel",
+        "type": "bool",
+        "value": true
+      },
+      "showThaiLesson": {
+        "order": 65,
+        "text": "Show: Thai lesson",
+        "type": "bool",
+        "value": true
+      }
+    }
+  }
+}

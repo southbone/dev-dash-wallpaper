@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <filter id="gls"><feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <style>
+    .sm-sun { animation: spin-slow 20s linear infinite; transform-origin:20px 20px; }
+    .cld    { animation: cld-float 5s ease-in-out infinite; }
+    @keyframes spin-slow  { to{transform:rotate(360deg)} }
+    @keyframes cld-float  { 0%,100%{transform:translateX(0)} 50%{transform:translateX(2px)} }
+  </style>
+  <!-- Маленькое солнце -->
+  <g class="sm-sun" filter="url(#gls)">
+    <circle cx="20" cy="20" r="7" fill="url(#sg2)"/>
+    <line x1="20" y1="8"  x2="20" y2="12" stroke="#ffd234" stroke-width="2" stroke-linecap="round"/>
+    <line x1="20" y1="28" x2="20" y2="32" stroke="#ffd234" stroke-width="2" stroke-linecap="round"/>
+    <line x1="8"  y1="20" x2="12" y2="20" stroke="#ffd234" stroke-width="2" stroke-linecap="round"/>
+    <line x1="28" y1="20" x2="32" y2="20" stroke="#ffd234" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <defs>
+    <radialGradient id="sg2" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#fffbe0"/>
+      <stop offset="100%" stop-color="#ffa500"/>
+    </radialGradient>
+  </defs>
+  <!-- Облако поверх -->
+  <g class="cld">
+    <circle cx="32" cy="38" r="10" fill="#8a96a4"/>
+    <circle cx="44" cy="40" r="8"  fill="#8a96a4"/>
+    <circle cx="22" cy="41" r="7"  fill="#8a96a4"/>
+    <rect x="20" y="39" width="30" height="9" rx="1" fill="#8a96a4"/>
+  </g>
+</svg>

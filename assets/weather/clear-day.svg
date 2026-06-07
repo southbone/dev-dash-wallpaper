@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <radialGradient id="sg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff8d0"/>
+      <stop offset="45%" stop-color="#ffd234"/>
+      <stop offset="100%" stop-color="#ff9200"/>
+    </radialGradient>
+    <filter id="glow-sun">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <style>
+    .sun-core { animation: sun-pulse 3s ease-in-out infinite; transform-origin:32px 32px; }
+    .ray      { animation: ray-grow  3s ease-in-out infinite; transform-origin:32px 32px; }
+    @keyframes sun-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+    @keyframes ray-grow  { 0%,100%{opacity:.45;transform:scale(1)} 50%{opacity:.75;transform:scale(1.12)} }
+  </style>
+  <!-- Внешнее свечение -->
+  <circle cx="32" cy="32" r="28" fill="rgba(255,160,0,0.10)"/>
+  <circle cx="32" cy="32" r="22" fill="rgba(255,190,0,0.12)"/>
+  <!-- Лучи -->
+  <g class="ray" filter="url(#glow-sun)">
+    <line x1="32" y1="4"  x2="32" y2="12" stroke="#ffd234" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="32" y1="52" x2="32" y2="60" stroke="#ffd234" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="4"  y1="32" x2="12" y2="32" stroke="#ffd234" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="52" y1="32" x2="60" y2="32" stroke="#ffd234" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="10" y1="10" x2="16" y2="16" stroke="#ffd234" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="48" y1="48" x2="54" y2="54" stroke="#ffd234" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="54" y1="10" x2="48" y2="16" stroke="#ffd234" stroke-width="2.2" stroke-linecap="round"/>
+    <line x1="16" y1="48" x2="10" y2="54" stroke="#ffd234" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+  <!-- Ядро -->
+  <circle cx="32" cy="32" r="14" fill="url(#sg)" class="sun-core" filter="url(#glow-sun)"/>
+</svg>
