@@ -617,7 +617,8 @@ var APP_VERSION = '1.0.0';
     }
     html +=       '<span class="thai-tr-en">[' + esc(entry.enTranscription) + ']</span>';
     html +=     '</div>';
-    html +=     '<div class="thai-meaning">' + esc(entry.meaning) + '</div>';
+    var meaning = (locale === 'en' && entry.meaningEn) ? entry.meaningEn : entry.meaning;
+    html +=     '<div class="thai-meaning">' + esc(meaning) + '</div>';
     html +=   '</div>';
     html += '</div>';
     html += '<div class="thai-divider"></div>';
@@ -634,7 +635,8 @@ var APP_VERSION = '1.0.0';
         html +=   '<span class="thai-syl-ru">[' + esc(sl.ruTr) + ']</span>';
         html +=   '<span class="thai-syl-pk">[' + esc(sl.phuketRuTr || '') + ']</span>';
         html +=   '<span class="thai-syl-en">[' + esc(sl.enTr) + ']</span>';
-        var exText = esc(sl.example);
+        var exRaw = (locale === 'en' && sl.exampleEn) ? sl.exampleEn : sl.example;
+        var exText = esc(exRaw);
         if (sl.examplePhuketRu && sl.examplePhuketRu !== '—')
           exText += ' <span class="thai-syl-ex-pk">(' + esc(sl.examplePhuketRu) + ')</span>';
         html +=   '<span class="thai-syl-ex">' + exText + '</span>';
@@ -656,7 +658,8 @@ var APP_VERSION = '1.0.0';
         html +=   '<span class="thai-word-ru">' + esc(w.ruTr)             + '</span>';
         html +=   '<span class="thai-word-pk">' + esc(w.phuketRuTr || '') + '</span>';
         html +=   '<span class="thai-word-en">' + esc(w.enTr)             + '</span>';
-        html +=   '<span class="thai-word-tr">' + esc(w.translation)      + '</span>';
+        var wTr = (locale === 'en' && w.translationEn) ? w.translationEn : w.translation;
+        html +=   '<span class="thai-word-tr">' + esc(wTr)                + '</span>';
         html += '</div>';
       }
       html += '</div>';
@@ -677,7 +680,8 @@ var APP_VERSION = '1.0.0';
           html += '<span class="thai-phrase-pk">' + esc(p.phuketRuTr) + '</span>';
         html +=     '<span class="thai-phrase-en">' + esc(p.enTr)       + '</span>';
         html +=   '</div>';
-        html +=   '<div class="thai-phrase-tr">'   + esc(p.translation) + '</div>';
+        var pTr = (locale === 'en' && p.translationEn) ? p.translationEn : p.translation;
+        html +=   '<div class="thai-phrase-tr">'   + esc(pTr)           + '</div>';
         html += '</div>';
       }
       html += '</div>';
