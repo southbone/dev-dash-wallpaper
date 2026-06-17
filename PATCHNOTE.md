@@ -1,52 +1,41 @@
 # ITWallpaper — Dev Desk · v1.2 (GLOBAL UPDATE)
 
-Большое обновление: мультиязычность, новые модули, гибкая кастомизация и переработанное меню.
+A major update: multi-language support, new modules, deep customization and a reworked menu.
 
 ---
 
-## 🌍 Языки и обучение
-- **Шесть языков интерфейса**: English, Русский, Español, 日本語, 한국어, ไทย.
-- **Два независимых выбора** в настройках: «Основной язык» (интерфейс) и «Язык изучения» (курс) — комбинируются как угодно.
-- **Курсы**: Thai, Spanish, English, Russian, Japanese, Korean — буквы/символы, слоги, слова и фразы. Транскрипция подстраивается под язык интерфейса (кириллица для RU, латиница для остальных).
-- **Новый модуль «Числа»** — счёт 1-10, 100, 1000 для активного курса (включается/выключается).
+## 🌍 Languages & learning
+- **Six interface languages**: English, Русский, Español, 日本語, 한국어, ไทย.
+- **Two independent selectors** in settings: **Primary language** (interface) and **Study language** (course) — mix them freely.
+- **Courses**: Thai, Spanish, English, Russian, Japanese, Korean — letters/characters, syllables, words and phrases. Transcription follows the interface language (Cyrillic for RU, Latin otherwise).
+- **New Numbers module** — counting 1–10, 100, 1000 for the active course (toggleable).
 
-## 🎨 Кастомизация
-- **Цвет модулей** и **цвет текста** — палитра + ввод по HEX-коду, сброс к теме.
-- **Фон виджета** в три режима: сплошной → полупрозрачный → прозрачный.
-- Темы **VS Code Dark / Cursor / Midnight**, акцентный цвет из Wallpaper Engine.
-- **Drag & Resize** всех панелей, индивидуальный показ/скрытие.
+## 🎨 Customization
+- **Module color** and **text color** pickers — palette + HEX input, reset to theme.
+- **Per-widget background** in three states: solid → semi-transparent → none.
+- Themes **VS Code Dark / Cursor / Midnight**, accent color from Wallpaper Engine.
+- **Drag & resize** for every panel, individual show/hide.
 
-## 🧩 Модули
-- **Быстрый доступ (apps)** — борд ярлыков. Веб-ссылки открываются в браузере; форма добавления появляется по «+» и скрывается после добавления; удаление/перемещение через ПКМ. По умолчанию у всех — ссылка на Steam-страницу автора (её можно удалить навсегда).
-- **Дублирование** модулей notes и apps; дубликаты **автоматически нумеруются** (`// apps 2`, `// apps 3`).
-- **Переименование** — двойной клик по заголовку notes/apps задаёт своё имя.
-- **Погода** расширена: ощущается, макс/мин, влажность, точка росы, ветер + направление и порывы, давление, облачность, UV-индекс, видимость, осадки и их вероятность, рассвет/закат. **Город по умолчанию не задан** — каждый указывает свой в настройках (⚙) или в свойствах Wallpaper Engine.
+## 🧩 Modules
+- **Quick-access apps** — a shortcut board. Web links open in the browser; the add form appears on “+” and hides after a link is added; remove/reorder via right-click. Ships with the author’s Steam page by default (deletable for good).
+- **Duplicate** notes and apps modules; duplicates are **auto-numbered** (`// apps 2`, `// apps 3`).
+- **Rename** — double-click a notes/apps header to set a custom name.
+- **Weather** expanded: feels-like, daily high/low, humidity, dew point, wind + direction & gusts, pressure, cloud cover, UV index, visibility, precipitation & its probability, sunrise/sunset. **No default city** — everyone sets their own in settings (⚙) or Wallpaper Engine properties.
 
-## 🧭 Раскладка и меню
-- **Новая раскладка по умолчанию**: слева уроки и числа, по центру часы (вверху) и программы (внизу), справа две колонки — погода/терминал и заметки/хоткеи. Ничего не накладывается.
-- **Переработанное нижнее меню**: только настройки и крестик. Крестик плавно сворачивает меню в левый-нижний угол; клик по нему — возврат в центр. Wallpaper Engine открывать не нужно.
+## 🧭 Layout & menu
+- **New default layout**: lessons & numbers on the left, clock (top) and apps (bottom) in the centre, two right-hand columns (weather/terminal and notes/hotkeys). Nothing overlaps.
+- **Reworked bottom menu**: settings and a close button only. Close smoothly collapses the menu into the bottom-left corner; click it to bring it back to the centre. No need to open Wallpaper Engine.
 
-## 🛠 Исправления
-- Выровнены номера строк в модуле часов.
-- Исправлен ресайз часов (содержимое больше не выходит за рамку).
-- Перевод в уроках больше не накладывается на слово.
-- Починены прокрутка и взаимодействие в notes / terminal / hotkeys.
-- Очищен неиспользуемый код.
+## 🛠 Fixes
+- Aligned the line numbers in the clock module.
+- Fixed clock resizing (content no longer spills outside the panel).
+- Lesson translation no longer overlaps the word.
+- Fixed scrolling and interaction in notes / terminal / hotkeys.
+- Removed unused code.
 
-## ℹ️ Примечания
-- Запуск локальных программ из веб-обоев Wallpaper Engine невозможен (ограничение платформы) — apps открывает веб-ссылки, локальные приложения показываются плитками.
-- Ввод текста (notes, переименование, добавление в apps) работает там, где WE передаёт фокус клавиатуры (редактор/превью WE).
-- Описание проекта доступно на 6 языках в папке `readme/`.
-
----
-
-## EN — what's new in v1.2
-- **6 interface languages** (EN/RU/ES/JA/KO/TH) with separate **Primary** and **Study** language selectors.
-- Courses: Thai, Spanish, English, Russian, Japanese, Korean — with a new **Numbers** (counting) module.
-- **Module color** & **text color** pickers (HEX), **tri-state** widget backgrounds.
-- **Quick-access apps** board (web links), **duplicable** & **renamable** notes/apps modules (auto-numbered).
-- Expanded **weather** (pressure, UV, dew point, wind direction & gusts, visibility, precipitation, high/low…).
-- New **default layout**; reworked **bottom menu** that collapses smoothly into the bottom-left corner and restores on click.
-- Fixes: clock alignment & resize, lesson word/translation overlap, panel scroll/interaction. Dead code removed.
+## ℹ️ Notes
+- Launching local programs from a Wallpaper Engine web wallpaper isn’t possible (platform limitation) — apps opens web links; local apps are shown as tiles.
+- Text input (notes, renaming, adding apps) works where WE delivers keyboard focus (the WE editor/preview).
+- The project description is available in 6 languages in the `readme/` folder.
 
 **Author:** southbone — https://steamcommunity.com/id/southbone/
