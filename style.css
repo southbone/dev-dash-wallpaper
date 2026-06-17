@@ -54,13 +54,13 @@
   /* Font fallback chain */
   --mono: 'JetBrains Mono', 'Cascadia Code', 'Cascadia Mono', 'Fira Code', Consolas, 'Courier New', monospace;
   /* Panel geometry */
-  --panel-w:   clamp(220px, 18.5vw, 420px);
+  --panel-w:   clamp(200px, 16vw, 360px);
   --panel-h:   clamp(260px, 36vh,   580px);
   --panel-r:   11px;
   --panel-pad: clamp(12px, 1.1vw, 22px);
   --edge-x:    3.2vw;
   --edge-y:    4.2vh;
-  --col-gap:   1.6vw;   /* gap between the inner- and outer-right columns */
+  --col-gap:   1.2vw;   /* gap between the inner- and outer-right columns */
   --fs:        clamp(10.5px, 0.83vw, 17px);
   /* Panel shadows — overridden per theme */
   --shadow-panel: 0 20px 60px rgba(0,0,0,.50), 0 4px 16px rgba(0,0,0,.30);
@@ -186,7 +186,8 @@ body {
 #panel-hotkeys  { right: var(--edge-x); top: 43%; animation-delay: .15s; }
 #panel-apps     {
   left: 50%; transform: translateX(-50%);
-  top: auto; bottom: var(--edge-y); height: auto; animation-delay: .18s;
+  top: auto; bottom: 7vh; height: auto;
+  animation: panel-in-fade .55s .18s ease forwards;
 }
 
 /* Centered editor clock. overflow:hidden so resizing actually bounds the
@@ -196,7 +197,8 @@ body {
   top: 6%;
   transform: translateX(-50%);
   width: auto;
-  min-width: clamp(240px, 22vw, 460px);
+  min-width: clamp(240px, 18vw, 400px);
+  max-width: 420px;
   height: auto;
   overflow: hidden;
   animation: panel-in-fade .55s .25s ease forwards;
@@ -768,7 +770,7 @@ body.layout-edit::after {
 ============================================================================= */
 @media (min-width: 2560px) {
   :root {
-    --panel-w:   clamp(260px, 15.5vw, 480px);
+    --panel-w:   clamp(240px, 13.5vw, 380px);
     --panel-h:   clamp(300px, 35vh,   640px);
     --fs:        clamp(12px,  0.72vw,  20px);
     --panel-pad: clamp(14px,  1.2vw,   26px);
