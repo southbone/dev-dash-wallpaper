@@ -112,11 +112,44 @@
   }
 
   /* =========================================================================
+     АВТО-ЛОКАЦИЯ ПО IP (без ключа) — используется, когда город не задан.
+     Пробует ipapi.co, при ошибке — ipwho.is. Результат кэшируется.
+  ========================================================================= */
+  var ipCache = null;
+  function ipLocate() {
+    if (ipCache) return Promise.resolve(ipCache);
+    return fetch('https://ipapi.co/json/')
+      .then(function (res) { if (!res.ok) throw new Error('ipapi ' + res.status); return res.json(); })
+      .then(function (d) {
+        if (d.latitude == null || d.longitude == null) throw new Error('ipapi no coords');
+        ipCache = { lat: d.latitude, lon: d.longitude, name: d.city || d.region || '' };
+        return ipCache;
+      })
+      .catch(function () {
+        return fetch('https://ipwho.is/')
+          .then(function (res) { return res.json(); })
+          .then(function (d) {
+            if (!d || d.latitude == null) throw new Error('ip geolocation failed');
+            ipCache = { lat: d.latitude, lon: d.longitude, name: d.city || '' };
+            return ipCache;
+          });
+      });
+  }
+
+  /* Resolve the location: a configured city is geocoded; an empty city falls
+     back to automatic IP-based detection. */
+  function resolveLocation(cfg) {
+    return (cfg.city && String(cfg.city).trim())
+      ? geocode(cfg.city)
+      : ipLocate();
+  }
+
+  /* =========================================================================
      ПРОВАЙДЕР: Open-Meteo (бесплатно, без ключа)
      Сначала геокодирует город, затем запрашивает погоду.
   ========================================================================= */
   function openmeteo(cfg) {
-    return geocode(cfg.city).then(function (geo) {
+    return resolveLocation(cfg).then(function (geo) {
       var windU   = cfg.units === 'imperial' ? 'mph'        : 'kmh';
       var tempU   = cfg.units === 'imperial' ? 'fahrenheit' : 'celsius';
       var precipU = cfg.units === 'imperial' ? 'inch'       : 'mm';

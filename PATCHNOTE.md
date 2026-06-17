@@ -20,7 +20,7 @@ A major update: multi-language support, new modules, deep customization and a re
 - **Quick-access apps** — a shortcut board. Web links open in the browser; the add form appears on “+” and hides after a link is added; remove/reorder via right-click. Ships with the author’s Steam page by default (deletable for good).
 - **Duplicate** notes and apps modules; duplicates are **auto-numbered** (`// apps 2`, `// apps 3`).
 - **Rename** — double-click a notes/apps header to set a custom name.
-- **Weather** expanded: feels-like, daily high/low, humidity, dew point, wind + direction & gusts, pressure, cloud cover, UV index, visibility, precipitation & its probability, sunrise/sunset. **No default city** — everyone sets their own in settings (⚙) or Wallpaper Engine properties.
+- **Weather** expanded: feels-like, daily high/low, humidity, dew point, wind + direction & gusts, pressure, cloud cover, UV index, visibility, precipitation & its probability, sunrise/sunset. **Auto-detects your city by IP** (no API key needed; override it in the Wallpaper Engine properties).
 
 ## 🧭 Layout & menu
 - **New default layout**: lessons & numbers on the left, clock (top) and apps (bottom) in the centre, two right-hand columns (weather/terminal and notes/hotkeys). Nothing overlaps.

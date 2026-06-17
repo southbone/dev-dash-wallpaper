@@ -576,6 +576,7 @@ var APP_VERSION = '1.2.0';
   window.wallpaperPropertyListener = {
     applyUserProperties: function (props) {
       var patch = {};
+      var weatherChanged = false;
 
       /* Accent color: WE passes three space-separated floats 0..1 */
       if (props.schemecolor && props.schemecolor.value) {
@@ -603,18 +604,21 @@ var APP_VERSION = '1.2.0';
         patch.general.format24h = props.format24h.value !== false;
         try { localStorage.setItem('itw_format24h', String(props.format24h.value !== false)); } catch (e) {}
       }
-      if (props.city && props.city.value) {
+      if (props.city && props.city.value !== undefined) {
         patch.weather = patch.weather || {};
-        patch.weather.city = props.city.value;
+        patch.weather.city = String(props.city.value).trim();
+        weatherChanged = true;
       }
       if (props.weatherKey && props.weatherKey.value) {
         patch.weather = patch.weather || {};
         patch.weather.apiKey   = props.weatherKey.value;
         patch.weather.provider = 'openweathermap';
+        weatherChanged = true;
       }
       if (props.weatherUnits && props.weatherUnits.value) {
         patch.weather = patch.weather || {};
         patch.weather.units = props.weatherUnits.value;
+        weatherChanged = true;
       }
       /* Language course selection from WE */
       if (props.course && props.course.value) {
@@ -666,6 +670,15 @@ var APP_VERSION = '1.2.0';
       }
 
       ITW.Config.apply(patch);
+
+      /* Refresh the weather immediately when the city/units/key change,
+         instead of waiting for the next 10-minute interval. */
+      if (weatherChanged) {
+        try { localStorage.setItem(WEATHER_CITY_KEY, ITW.Config.get().weather.city || ''); } catch (e) {}
+        var ci = document.getElementById('settings-city-input');
+        if (ci && document.activeElement !== ci) ci.value = ITW.Config.get().weather.city || '';
+        if (typeof fetchWeather === 'function') fetchWeather();
+      }
     }
   };
 
@@ -732,18 +745,7 @@ var APP_VERSION = '1.2.0';
    */
   function fetchWeather() {
     var condEl = document.getElementById('w-cond');
-
-    /* No city set yet — prompt the user instead of fetching a default city. */
-    var city = (ITW.Config.get().weather.city || '').trim();
-    if (!city) {
-      if (condEl) condEl.textContent = t('weather.setCity');
-      var tEl = document.getElementById('w-temp');
-      if (tEl) tEl.textContent = '—';
-      var lEl = document.getElementById('w-location');
-      if (lEl) lEl.textContent = '';
-      return;
-    }
-
+    /* Empty city → ITW.Weather auto-detects the location by IP. */
     if (condEl) condEl.textContent = t('weather.loading');
 
     ITW.Weather.fetch()
