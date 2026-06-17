@@ -10,9 +10,11 @@
  *
  * Публичный объект данных:
  *   {
- *     temp, feelsLike, condition, humidity, wind,
+ *     temp, feelsLike, condition, humidity, wind, gust, pressure, cloud,
+ *     dewPoint, precip, uv, precipProb, tempHL, visibility,
  *     location, code, isDay, sunrise, sunset
  *   }
+ * Поля, недоступные у провайдера, возвращаются как '—'.
  */
 (function (root) {
   'use strict';
@@ -30,6 +32,25 @@
   /* Суффикс единицы скорости ветра */
   function windSuffix(units) {
     return units === 'imperial' ? ' mph' : ' km/h';
+  }
+
+  /**
+   * Returns an 8-point compass label (N, NE, …) for a bearing in degrees.
+   * Empty string when the bearing is unknown.
+   */
+  function compass(deg) {
+    if (deg === null || deg === undefined || isNaN(deg)) return '';
+    return ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'][Math.round(deg / 45) % 8];
+  }
+
+  /**
+   * Formats a visibility value (meters) into km or miles for the active units.
+   */
+  function formatVisibility(meters, units) {
+    if (meters === null || meters === undefined || isNaN(meters)) return '—';
+    return units === 'imperial'
+      ? (meters / 1609.34).toFixed(1) + ' mi'
+      : (meters / 1000).toFixed(1) + ' km';
   }
 
   /* =========================================================================
@@ -96,17 +117,22 @@
   ========================================================================= */
   function openmeteo(cfg) {
     return geocode(cfg.city).then(function (geo) {
-      var windU  = cfg.units === 'imperial' ? 'mph'        : 'kmh';
-      var tempU  = cfg.units === 'imperial' ? 'fahrenheit' : 'celsius';
+      var windU   = cfg.units === 'imperial' ? 'mph'        : 'kmh';
+      var tempU   = cfg.units === 'imperial' ? 'fahrenheit' : 'celsius';
+      var precipU = cfg.units === 'imperial' ? 'inch'       : 'mm';
 
       var url =
         'https://api.open-meteo.com/v1/forecast' +
         '?latitude='  + geo.lat + '&longitude=' + geo.lon +
         '&current=temperature_2m,relative_humidity_2m,apparent_temperature,' +
-                  'is_day,weather_code,wind_speed_10m' +
-        '&daily=sunrise,sunset' +
+                  'is_day,weather_code,wind_speed_10m,wind_direction_10m,' +
+                  'wind_gusts_10m,pressure_msl,cloud_cover,precipitation,dew_point_2m' +
+        '&hourly=visibility' +
+        '&daily=sunrise,sunset,temperature_2m_max,temperature_2m_min,' +
+                'uv_index_max,precipitation_probability_max' +
         '&wind_speed_unit=' + windU +
         '&temperature_unit=' + tempU +
+        '&precipitation_unit=' + precipU +
         '&timezone=auto';
 
       return fetch(url)
@@ -115,17 +141,40 @@
           return res.json();
         })
         .then(function (data) {
-          var c     = data.current;
-          var daily = data.daily || {};
-          var sym   = unitSymbol(cfg.units);
-          var wsuf  = windSuffix(cfg.units);
+          var c      = data.current || {};
+          var daily  = data.daily   || {};
+          var hourly = data.hourly  || {};
+          var sym    = unitSymbol(cfg.units);
+          var wsuf   = windSuffix(cfg.units);
+          var psuf   = cfg.units === 'imperial' ? ' in' : ' mm';
+          var dir    = compass(c.wind_direction_10m);
+
+          /* Pick the visibility sample for the current hour. */
+          var vis = '—';
+          if (hourly.visibility && hourly.time) {
+            var hi = hourly.time.indexOf(c.time);
+            if (hi < 0) hi = 0;
+            vis = formatVisibility(hourly.visibility[hi], cfg.units);
+          }
 
           return {
             temp:      Math.round(c.temperature_2m) + sym,
             feelsLike: Math.round(c.apparent_temperature) + sym,
             condition: wmoDesc(c.weather_code),
             humidity:  c.relative_humidity_2m + '%',
-            wind:      Math.round(c.wind_speed_10m) + wsuf,
+            wind:      Math.round(c.wind_speed_10m) + wsuf + (dir ? ' ' + dir : ''),
+            gust:      c.wind_gusts_10m != null ? Math.round(c.wind_gusts_10m) + wsuf : '—',
+            pressure:  c.pressure_msl  != null ? Math.round(c.pressure_msl) + ' hPa' : '—',
+            cloud:     c.cloud_cover   != null ? c.cloud_cover + '%' : '—',
+            dewPoint:  c.dew_point_2m  != null ? Math.round(c.dew_point_2m) + sym : '—',
+            precip:    c.precipitation != null ? c.precipitation + psuf : '—',
+            uv:        daily.uv_index_max ? Math.round(daily.uv_index_max[0]) : '—',
+            precipProb: daily.precipitation_probability_max
+                        ? daily.precipitation_probability_max[0] + '%' : '—',
+            tempHL:    (daily.temperature_2m_max && daily.temperature_2m_min)
+                        ? Math.round(daily.temperature_2m_max[0]) + ' / ' +
+                          Math.round(daily.temperature_2m_min[0]) + sym : '—',
+            visibility: vis,
             location:  geo.name || cfg.city,
             code:      c.weather_code,
             isDay:     c.is_day === 1,
@@ -155,13 +204,26 @@
         var sym  = unitSymbol(cfg.units);
         var wsuf = windSuffix(cfg.units);
         var h    = new Date().getHours();
+        var main = data.main || {};
+        var wind = data.wind || {};
+        var dir  = compass(wind.deg);
 
         return {
-          temp:      Math.round(data.main.temp) + sym,
-          feelsLike: Math.round(data.main.feels_like) + sym,
+          temp:      Math.round(main.temp) + sym,
+          feelsLike: Math.round(main.feels_like) + sym,
           condition: (data.weather && data.weather[0] && data.weather[0].main) || '—',
-          humidity:  data.main.humidity + '%',
-          wind:      Math.round((data.wind && data.wind.speed) || 0) + wsuf,
+          humidity:  main.humidity + '%',
+          wind:      Math.round(wind.speed || 0) + wsuf + (dir ? ' ' + dir : ''),
+          gust:      wind.gust != null ? Math.round(wind.gust) + wsuf : '—',
+          pressure:  main.pressure != null ? main.pressure + ' hPa' : '—',
+          cloud:     (data.clouds && data.clouds.all != null) ? data.clouds.all + '%' : '—',
+          dewPoint:  '—',     /* not provided by the OWM current endpoint */
+          precip:    (data.rain && data.rain['1h'] != null) ? data.rain['1h'] + ' mm' : '—',
+          uv:        '—',     /* requires the OWM One Call endpoint */
+          precipProb: '—',
+          tempHL:    (main.temp_max != null && main.temp_min != null)
+                      ? Math.round(main.temp_max) + ' / ' + Math.round(main.temp_min) + sym : '—',
+          visibility: formatVisibility(data.visibility, cfg.units),
           location:  data.name || cfg.city,
           code:      null,       /* OWM не использует WMO-коды, иконка по isDay */
           isDay:     h >= 6 && h < 20,
@@ -186,12 +248,23 @@
     var idx  = Math.floor((Math.sin(t / 11) + 1) * 2) % MOCK_CONDITIONS.length;
     var h    = new Date().getHours();
 
+    var temp = Math.round(base + Math.sin(t / 7) * 3);
+
     return Promise.resolve({
-      temp:      Math.round(base + Math.sin(t / 7) * 3) + sym,
-      feelsLike: Math.round(base + Math.sin(t / 7) * 3 - 2) + sym,
+      temp:      temp + sym,
+      feelsLike: (temp - 2) + sym,
       condition: MOCK_CONDITIONS[idx],
       humidity:  Math.round(60 + Math.sin(t / 5) * 12) + '%',
-      wind:      Math.round(8 + Math.sin(t / 3) * 4) + wsuf,
+      wind:      Math.round(8 + Math.sin(t / 3) * 4) + wsuf + ' NE',
+      gust:      Math.round(14 + Math.sin(t / 3) * 5) + wsuf,
+      pressure:  Math.round(1011 + Math.sin(t / 9) * 4) + ' hPa',
+      cloud:     Math.round(45 + Math.sin(t / 6) * 30) + '%',
+      dewPoint:  (temp - 6) + sym,
+      precip:    (cfg.units === 'imperial' ? '0.0 in' : '0.0 mm'),
+      uv:        Math.max(0, Math.round(6 + Math.sin(t / 8) * 3)),
+      precipProb: Math.round(30 + Math.sin(t / 4) * 25) + '%',
+      tempHL:    (temp + 3) + ' / ' + (temp - 4) + sym,
+      visibility: (cfg.units === 'imperial' ? '6.2 mi' : '10.0 km'),
       location:  cfg.city,
       code:      MOCK_CODES[idx],
       isDay:     h >= 6 && h < 20,

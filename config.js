@@ -1,5 +1,5 @@
 /**
- * config.js — ITWallpaper Dashboard v1.0.0
+ * config.js — ITWallpaper Dashboard v1.2.0
  * Единственный источник истины для runtime-конфигурации.
  *
  * Дефолты живут здесь. При запуске Wallpaper Engine проталкивает
@@ -15,9 +15,11 @@
  *   itw_format24h     string   'true' | 'false'         Формат часов
  *   itw_visibility    JSON     { clock, weather, ... }  Видимость виджетов
  *   itw_widget_pos    JSON     { "panel-id": {x,y} }    Позиции виджетов после drag
- *   itw_notes_v2      string   произвольный текст       Содержимое блокнота
- *   itw_thai_index    string   число                    Индекс текущего урока тайского
- *   itw_thai_date     string   Date.toDateString()      Дата последней авторотации урока
+ *   itw_notes_v2          string  произвольный текст      Содержимое блокнота
+ *   itw_course            string  id курса                Выбранный язык для изучения
+ *   itw_lesson_idx_<id>   string  число                   Индекс текущего урока курса
+ *   itw_lesson_date_<id>  string  Date.toDateString()     Дата последней авторотации урока
+ *   itw_langbar_hidden    string  'true' | 'false'        Скрыта ли экранная панель языка
  *
  * ─── Очистка ────────────────────────────────────────────────────────────────
  *   Все ключи удаляются через «Reset All Settings» в панели настроек.
@@ -39,7 +41,7 @@
       enabled: true,
       provider: 'openmeteo',    // openmeteo — бесплатно без ключа; openweathermap — требует apiKey
       apiKey: '',               // empty -> mock data
-      city: 'Phuket',
+      city: '',                 // empty -> user sets their own city in settings/WE
       units: 'metric',          // metric | imperial
       refreshMs: 10 * 60 * 1000
     },
@@ -56,14 +58,20 @@
     particles: {
       density: 1.0
     },
-    /* Видимость виджетов: управляется из панели настроек и WE-свойств */
+    /* Lessons: default study language (overridable via WE/localStorage). */
+    lessons: {
+      course: 'spanish'
+    },
+    /* Widget visibility defaults (settings panel / WE properties override). */
     visibility: {
       clock:    true,
       weather:  true,
       notes:    true,
       hotkeys:  true,
       terminal: true,
-      thai:     true
+      lessons:  true,
+      apps:     true,
+      numbers:  true
     }
   };
 

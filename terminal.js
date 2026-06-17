@@ -119,11 +119,6 @@
       running = false;
       if (timer) { clearTimeout(timer); timer = null; }
       for (var i = 0; i < rows.length; i++) rows[i].classList.remove('tm-hot');
-    },
-    setEnabled: function (on) {
-      var panelEl = document.getElementById('panel-terminal');
-      if (panelEl) panelEl.style.display = on ? '' : 'none';
-      if (on) this.start(); else this.stop();
     }
   };
 })(window);

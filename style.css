@@ -1,23 +1,23 @@
 /* =============================================================================
-   ITWallpaper — style.css  v1.0.0
-   Минималистичный дашборд разработчика для Wallpaper Engine.
+   ITWallpaper — style.css  v1.2.0
+   Minimalist developer dashboard for Wallpaper Engine.
 
-   Макет: все виджеты position:fixed, дефолтные позиции через ID-правила.
-   Перетаскивание: JS записывает inline left/top, CSS-дефолт — при сбросе.
+   Layout: every widget is position:fixed, default positions via ID rules.
+   Dragging: JS writes inline left/top, the CSS default is used after reset.
 ============================================================================= */
 
-/* ── Шрифты ──────────────────────────────────────────────────────────────────
-   Стратегия загрузки (три уровня):
-   1. Локальные файлы assets/fonts/*.woff2 — быстро, работает офлайн.
-      Установка: скачай JetBrains Mono (OFL, бесплатно):
+/* ── Fonts ───────────────────────────────────────────────────────────────────
+   Loading strategy (three tiers):
+   1. Local files assets/fonts/*.woff2 — fast, works offline.
+      Setup: download JetBrains Mono (OFL, free):
         https://www.jetbrains.com/lp/mono/
-      Положи в assets/fonts/:
+      Put into assets/fonts/:
         JetBrainsMono-Regular.woff2  (weight 400)
         JetBrainsMono-Medium.woff2   (weight 500)
-   2. Google Fonts CDN (async, тег <link> в index.html) — при наличии интернета.
-   3. Системные моноширинные: Cascadia Code / Consolas / monospace — всегда.
-   Если файлы в assets/fonts/ отсутствуют — @font-face молча падает,
-   браузер переходит к следующему источнику. Внешний вид корректный.
+   2. Google Fonts CDN (async <link> tag in index.html) — when online.
+   3. System monospace: Cascadia Code / Consolas / monospace — always.
+   If the files in assets/fonts/ are missing, @font-face fails silently and
+   the browser falls through to the next source. Appearance stays correct.
 ──────────────────────────────────────────────────────────────────────────── */
 @font-face {
   font-family: 'JetBrains Mono';
@@ -30,44 +30,50 @@
   font-weight: 500; font-style: normal; font-display: swap;
 }
 
-/* ── Дизайн-токены (тема vscode — дефолт) ── */
+/* ── Design tokens (vscode theme — default) ── */
 :root {
-  /* Фон */
+  /* Background */
   --bg-1: #1e1f26; --bg-2: #22242d; --bg-3: #252733;
-  /* Панели */
+  /* Panels.  --panel-rgb / --panel-alpha drive the per-widget tri-state
+     background; a custom module color overrides --panel-rgb at runtime. */
   --panel-bg:     rgba(24, 26, 35, 0.82);
+  --panel-rgb:    24,26,35;
+  --panel-alpha:  0.82;
   --panel-border: rgba(255,255,255,0.06);
   --panel-shine:  rgba(255,255,255,0.02);
-  /* Текст */
+  /* Text */
   --text:   #c8ccd4;
   --muted:  #50596b;
   --faint:  #2c3040;
-  /* Токены синтаксиса */
+  /* Syntax tokens */
   --c-kw:   #c792ea; --c-var:  #82aaff; --c-prop: #9cdcfe;
   --c-str:  #ce9178; --c-num:  #b5cea8; --c-pct:  #546075;
   --c-op:   #89ddff; --c-cmt:  #3c4452;
-  /* Акцент */
+  /* Accent */
   --accent: #56d4dd; --accent-rgb: 86,212,221;
-  /* Шрифт: цепочка fallback */
+  /* Font fallback chain */
   --mono: 'JetBrains Mono', 'Cascadia Code', 'Cascadia Mono', 'Fira Code', Consolas, 'Courier New', monospace;
-  /* Геометрия панелей */
+  /* Panel geometry */
   --panel-w:   clamp(220px, 18.5vw, 420px);
   --panel-h:   clamp(260px, 36vh,   580px);
   --panel-r:   11px;
   --panel-pad: clamp(12px, 1.1vw, 22px);
   --edge-x:    3.2vw;
   --edge-y:    4.2vh;
+  --col-gap:   1.6vw;   /* gap between the inner- and outer-right columns */
   --fs:        clamp(10.5px, 0.83vw, 17px);
-  /* Тени панелей — переопределяются в каждой теме */
+  /* Panel shadows — overridden per theme */
   --shadow-panel: 0 20px 60px rgba(0,0,0,.50), 0 4px 16px rgba(0,0,0,.30);
   --shadow-hover: 0 24px 68px rgba(0,0,0,.55), 0 4px 20px rgba(0,0,0,.34);
   --shadow-drag:  0 28px 64px rgba(0,0,0,.65);
 }
 
-/* ── Тема Cursor (тёмно-синяя, Catppuccin Mocha) ── */
+/* ── Cursor theme (dark blue, Catppuccin Mocha) ── */
 [data-theme="cursor"] {
   --bg-1: #1a1b26; --bg-2: #1e1f2e; --bg-3: #22243a;
   --panel-bg:     rgba(22, 23, 40, 0.88);
+  --panel-rgb:    22,23,40;
+  --panel-alpha:  0.88;
   --panel-border: rgba(100, 120, 220, 0.12);
   --panel-shine:  rgba(100, 120, 220, 0.04);
   --text:   #cdd6f4; --muted: #6c7086; --faint: #313244;
@@ -75,16 +81,18 @@
   --c-str:  #a6e3a1; --c-num: #fab387; --c-pct:  #585b70;
   --c-op:   #94e2d5; --c-cmt: #45475a;
   --accent: #7b8cde; --accent-rgb: 123,140,222;
-  /* Тени Cursor: чуть насыщеннее, синеватый подтон */
+  /* Cursor shadows: slightly richer, blue tint */
   --shadow-panel: 0 20px 60px rgba(0,0,10,.58), 0 4px 16px rgba(0,0,10,.36);
   --shadow-hover: 0 24px 72px rgba(0,0,10,.63), 0 4px 20px rgba(0,0,10,.40);
   --shadow-drag:  0 28px 68px rgba(0,0,10,.72);
 }
 
-/* ── Тема Midnight (глубокий тёмно-фиолетовый) ── */
+/* ── Midnight theme (deep dark purple) ── */
 [data-theme="midnight"] {
   --bg-1: #0d0e1a; --bg-2: #111222; --bg-3: #141628;
   --panel-bg:     rgba(8, 9, 20, 0.90);
+  --panel-rgb:    8,9,20;
+  --panel-alpha:  0.90;
   --panel-border: rgba(120, 90, 200, 0.10);
   --panel-shine:  rgba(120, 90, 200, 0.03);
   --text:   #c8c8e8; --muted: #4a4a6e; --faint: #1e1e36;
@@ -92,13 +100,13 @@
   --c-str:  #c9e8a0; --c-num: #ffd580; --c-pct:  #4a4a6e;
   --c-op:   #88d9d9; --c-cmt: #3e3e5e;
   --accent: #b09aff; --accent-rgb: 176,154,255;
-  /* Тени Midnight: максимально тёмные, фиолетовый подтон */
+  /* Midnight shadows: darkest, purple tint */
   --shadow-panel: 0 20px 60px rgba(5,0,20,.68), 0 4px 16px rgba(5,0,20,.46);
   --shadow-hover: 0 24px 72px rgba(5,0,20,.74), 0 4px 20px rgba(5,0,20,.50);
   --shadow-drag:  0 28px 72px rgba(5,0,20,.84);
 }
 
-/* ── Портретная ориентация ── */
+/* ── Portrait orientation ── */
 @media (orientation: portrait) {
   :root {
     --panel-w: clamp(150px, 27vw, 280px);
@@ -108,12 +116,12 @@
   }
 }
 
-/* ── Сброс ── */
+/* ── Reset ── */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html, body { width:100%; height:100%; overflow:hidden; }
 * { user-select:none; -webkit-user-select:none; }
 
-/* ── Фон страницы (без grid — все виджеты fixed) ── */
+/* ── Page background (no grid — all widgets are fixed) ── */
 body {
   font-family: var(--mono);
   font-size: var(--fs);
@@ -127,20 +135,20 @@ body {
 }
 
 /* =============================================================================
-   ВИДЖЕТ — базовые стили
-   Все панели: position:fixed. Дефолтная позиция задана правилами ниже (#id).
-   Drag переопределяет left/top/transform через inline style.
+   WIDGET — base styles
+   All panels: position:fixed. Default positions set by #id rules below.
+   Dragging overrides left/top/transform via inline style.
 ============================================================================= */
 .panel {
   position: fixed;
   width: var(--panel-w);
   height: var(--panel-h);
-  background: var(--panel-bg);
+  background: rgba(var(--panel-rgb), var(--panel-alpha));
   border: 1px solid var(--panel-border);
   border-radius: var(--panel-r);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  /* Используем CSS-переменные тени — меняются с темой */
+  /* Shadow CSS variables — change with the theme */
   box-shadow:
     0 0 0 1px var(--panel-shine) inset,
     var(--shadow-panel);
@@ -148,7 +156,7 @@ body {
   flex-direction: column;
   overflow: hidden;
   z-index: 1;
-  /* Анимация входа: fade + slide */
+  /* Entrance animation: fade + slide */
   opacity: 0;
   animation: panel-in-up .55s ease forwards;
   transition: box-shadow .35s ease;
@@ -159,36 +167,45 @@ body {
     var(--shadow-hover);
 }
 
-/* ── Дефолтные позиции угловых виджетов ── */
-#panel-weather  { left: var(--edge-x); top: var(--edge-y);                    animation-delay: .05s; }
-#panel-notes    { right: var(--edge-x); top: var(--edge-y);                   animation-delay: .10s; }
-#panel-hotkeys  { left: var(--edge-x); bottom: var(--edge-y);                 animation-delay: .15s; }
-#panel-terminal { right: var(--edge-x); bottom: var(--edge-y);                animation-delay: .20s; }
+/* ── Default layout (final) ────────────────────────────────────────────────
+   Left column:   lessons (top), numbers (lower).
+   Centre:        clock (top), apps (bottom).
+   Inner-right:   weather (top), terminal (lower).
+   Outer-right:   notes (top), hotkeys (lower).
+   The inner-right column is offset by one panel width + a gap so it sits to
+   the left of the outer-right column. --col-gap is defined in :root. */
+#panel-lessons  {
+  left: var(--edge-x); top: var(--edge-y);
+  width: clamp(280px, 30vw, 540px); height: auto;
+  animation: panel-in-fade .55s .30s ease forwards;
+}
+#panel-numbers  { left: var(--edge-x); top: 43%; height: auto; animation-delay: .22s; }
+#panel-weather  { right: calc(var(--edge-x) + var(--panel-w) + var(--col-gap)); top: var(--edge-y); animation-delay: .05s; }
+#panel-terminal { right: calc(var(--edge-x) + var(--panel-w) + var(--col-gap)); top: 43%; animation-delay: .20s; }
+#panel-notes    { right: var(--edge-x); top: var(--edge-y); animation-delay: .10s; }
+#panel-hotkeys  { right: var(--edge-x); top: 43%; animation-delay: .15s; }
+#panel-apps     {
+  left: 50%; transform: translateX(-50%);
+  top: auto; bottom: var(--edge-y); height: auto; animation-delay: .18s;
+}
 
-/* Центральные виджеты: fade only (transform используется для центрирования) */
+/* Centered editor clock. overflow:hidden so resizing actually bounds the
+   content instead of letting the code spill outside the panel. */
 #panel-clock {
   left: 50%;
-  top: 50%;
-  transform: translate(-50%, calc(-100% - 1.5vh));
+  top: 6%;
+  transform: translateX(-50%);
   width: auto;
   min-width: clamp(240px, 22vw, 460px);
   height: auto;
-  overflow: visible;
+  overflow: hidden;
   animation: panel-in-fade .55s .25s ease forwards;
-}
-#panel-thai {
-  left: 50%;
-  top: calc(50% + 1.5vh);
-  transform: translateX(-50%);
-  width: clamp(280px, 30vw, 540px);
-  height: auto;
-  animation: panel-in-fade .55s .30s ease forwards;
 }
 
 @keyframes panel-in-up  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 @keyframes panel-in-fade { from { opacity:0; } to { opacity:1; } }
 
-/* ── Заголовок и тело панели ── */
+/* ── Panel header and body ── */
 .panel-header {
   flex: 0 0 auto;
   padding: calc(var(--panel-pad)*.7) var(--panel-pad);
@@ -196,6 +213,25 @@ body {
   letter-spacing: .05em; font-style: italic;
   border-bottom: 1px solid var(--panel-border);
   user-select: none; white-space: nowrap;
+  display: flex; align-items: center; justify-content: space-between; gap: .5em;
+}
+/* Header controls (duplicate / remove) on notes & apps panels */
+.panel-controls { display: flex; gap: .15em; opacity: 0; transition: opacity .2s; }
+.panel:hover .panel-controls { opacity: 1; }
+.panel-ctl-btn {
+  background: transparent; border: none; color: var(--muted);
+  font-family: var(--mono); font-size: 1em; line-height: 1;
+  padding: 0 .35em; border-radius: 3px; cursor: pointer;
+  font-style: normal; transition: color .2s;
+}
+.panel-ctl-btn:hover { color: var(--accent); }
+.panel-header-title { cursor: text; }
+.panel-title-input {
+  background: transparent; border: 1px solid var(--accent);
+  color: var(--text); font-family: var(--mono); font-size: 1em;
+  font-style: italic; letter-spacing: .05em;
+  padding: 0 .25em; border-radius: 3px; width: 9em; outline: none;
+  user-select: text; -webkit-user-select: text;
 }
 .panel-body {
   flex: 1 1 auto; min-height: 0;
@@ -208,7 +244,7 @@ body {
 .panel-body::-webkit-scrollbar-thumb { background:var(--faint); border-radius:2px; }
 
 /* =============================================================================
-   ПОГОДА
+   WEATHER
 ============================================================================= */
 .w-hero { display:flex; align-items:center; gap:.85em; padding-bottom:1em; margin-bottom:1em; border-bottom:1px solid var(--faint); }
 .w-canvas { flex-shrink:0; display:block; width:68px; height:68px; transition:opacity .25s ease; }
@@ -223,7 +259,7 @@ body {
 .w-location { font-size:.70em; color:var(--c-cmt); letter-spacing:.03em; margin-top:.2em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
 /* =============================================================================
-   ЗАМЕТКИ
+   NOTES
 ============================================================================= */
 .notes-body { display:flex; flex-direction:column; padding:calc(var(--panel-pad)*.6) var(--panel-pad) var(--panel-pad); }
 .notes-area {
@@ -237,11 +273,12 @@ body {
 .notes-area::placeholder { color:var(--c-cmt); }
 
 /* =============================================================================
-   ЧАСЫ-РЕДАКТОР
+   EDITOR CLOCK
 ============================================================================= */
 .clock-body {
   padding: var(--panel-pad);
-  overflow: visible;
+  overflow: auto;
+  scrollbar-width: thin; scrollbar-color: var(--faint) transparent;
 }
 .clock-editor {
   font-size: clamp(14px, 1.35vw, 28px);
@@ -250,7 +287,7 @@ body {
 .clock-editor .editor-gutter { min-width: 2em; padding-right: .7em; }
 
 /* =============================================================================
-   РЕДАКТОР / TYPEWRITER (typewriter.js)
+   EDITOR / TYPEWRITER (typewriter.js)
 ============================================================================= */
 .editor-wrap {
   display: flex;
@@ -267,10 +304,15 @@ body {
   padding-right: .8em; opacity: .4; user-select: none;
 }
 .editor-code { flex: 1; min-width: 0; }
-.gln   { display: block; font-size: .85em; }
-.cline { display: block; }
+/* Gutter and code rows must share the SAME pixel height or the line numbers
+   drift out of alignment. The gutter uses a smaller font (.85em), so its
+   line-height is scaled up by 1/.85 to keep every row exactly 1.72em tall
+   (matching .cline). min-height on .cline keeps blank model lines full height
+   instead of collapsing to zero. */
+.gln   { display: block; font-size: .85em; line-height: calc(1.72 / 0.85); }
+.cline { display: block; line-height: 1.72; min-height: 1.72em; }
 
-/* Токены подсветки typewriter */
+/* Typewriter highlight tokens */
 .tk-kw      { color: var(--c-kw);   font-weight: 500; }
 .tk-var     { color: var(--c-var);  }
 .tk-prop    { color: var(--c-prop); }
@@ -279,22 +321,13 @@ body {
 .tk-str     { color: var(--c-str);  }
 .tk-num     { color: var(--c-num);  }
 
-/* Токены clock (устаревшие, совместимость) */
-.c-kw   { color:var(--c-kw);   font-weight:500; }
-.c-var  { color:var(--c-var);  }
-.c-prop { color:var(--c-prop); }
-.c-str  { color:var(--c-str);  }
-.c-num  { color:var(--c-num);  }
-.c-pct  { color:var(--c-pct);  }
-.c-op   { color:var(--c-op);   }
-
-/* Вспышки при изменении значений */
+/* Flashes when values change */
 @keyframes flash-tk-num { 0% { color:#d4d8e0; } 100% { color:var(--c-num); } }
 @keyframes flash-tk-str { 0% { color:#d4d8e0; } 100% { color:var(--c-str); } }
 .tk-num.flash { animation: flash-tk-num .30s ease forwards; }
 .tk-str.flash { animation: flash-tk-str .30s ease forwards; }
 
-/* Мигающий курсор */
+/* Blinking caret */
 .caret {
   display: inline-block; width: .52em; height: .88em;
   vertical-align: text-bottom;
@@ -304,16 +337,19 @@ body {
 @keyframes blink { 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
 
 /* =============================================================================
-   ТАЙСКИЙ АЛФАВИТ (внутри .panel#panel-thai)
+   LANGUAGE LESSONS (inside .panel#panel-lessons)
+   Markup is produced by the data-driven renderer in script.js.
+   Transcription column colors are positional: .lesson-tr-1 / -2 / -3.
+   Grid column templates are set inline (they depend on the dataset).
 ============================================================================= */
-.panel-thai { overflow: hidden; }
+.panel-lessons { overflow: hidden; }
 
-/* Навигационная строка */
-.thai-nav-bar {
+/* Navigation row */
+.lesson-nav-bar {
   display: flex; align-items: center; justify-content: space-between;
   padding: .45em .9em;
 }
-.thai-nav-btn {
+.lesson-nav-btn {
   background: transparent; border: none;
   color: var(--muted); font-family: var(--mono);
   font-size: 1em; cursor: pointer;
@@ -321,89 +357,88 @@ body {
   transition: color .2s, background .2s;
   pointer-events: all;
 }
-.thai-nav-btn:hover { color: var(--accent); background: rgba(var(--accent-rgb),.08); }
+.lesson-nav-btn:hover { color: var(--accent); background: rgba(var(--accent-rgb),.08); }
 
-.thai-nav-label {
+.lesson-nav-label {
   font-size: .78em; color: var(--muted);
   font-style: italic; letter-spacing: .04em; transition: color .2s;
 }
 
-/* Прогресс-бар */
-.thai-progress { height: 2px; background: var(--faint); overflow: hidden; }
-.thai-progress-bar {
+/* Progress bar */
+.lesson-progress { height: 2px; background: var(--faint); overflow: hidden; }
+.lesson-progress-bar {
   height: 100%; background: var(--accent); width: 0%;
   transition: width .4s cubic-bezier(.4,0,.2,1);
   box-shadow: 0 0 6px rgba(var(--accent-rgb),.4);
 }
 
-/* Содержимое урока */
-.thai-content {
+/* Lesson content */
+.lesson-content {
   padding: .85em 1.1em 1em;
   display: flex; flex-direction: column; gap: .55em;
   max-height: clamp(180px, 28vh, 340px);
   overflow-y: auto;
   scrollbar-width: thin; scrollbar-color: var(--faint) transparent;
 }
-.thai-loading { font-size:.80em; color:var(--muted); text-align:center; padding:1em 0; }
+.lesson-loading { font-size:.80em; color:var(--muted); text-align:center; padding:1em 0; }
 
-/* Главная буква */
-.thai-letter-row { display: flex; align-items: center; gap: 1em; padding-bottom: .1em; }
-.thai-letter {
+/* Main symbol */
+.lesson-letter-row { display: flex; align-items: center; gap: 1em; padding-bottom: .1em; }
+.lesson-letter {
   font-size: 3.4em; line-height: 1;
   color: var(--accent); font-weight: 500; flex-shrink: 0;
   text-shadow: 0 0 24px rgba(var(--accent-rgb),.45), 0 0 8px rgba(var(--accent-rgb),.20);
   letter-spacing: -.01em;
 }
-.thai-letter-info { display:flex; flex-direction:column; gap:.18em; }
-.thai-letter-name { font-size:.92em; color:var(--text); font-weight:500; }
-.thai-transcriptions { display:flex; gap:.7em; align-items:baseline; }
-.thai-tr-ru { font-size:.80em; color:var(--c-str); }
-.thai-tr-pk { font-size:.80em; color:#e5a86b; }
-.thai-tr-en { font-size:.80em; color:var(--c-var); }
-.thai-meaning { font-size:.76em; color:var(--muted); font-style:italic; }
+.lesson-letter-info { display:flex; flex-direction:column; gap:.18em; }
+.lesson-letter-name { font-size:.92em; color:var(--text); font-weight:500; }
+.lesson-transcriptions { display:flex; gap:.7em; align-items:baseline; }
+.lesson-transcriptions span { font-size:.80em; }
+.lesson-meaning { font-size:.76em; color:var(--muted); font-style:italic; }
 
-/* Разделитель */
-.thai-divider { height:1px; background:var(--faint); margin:.1em 0; }
+/* Positional transcription column colors */
+.lesson-tr-1 { color: var(--c-str); }
+.lesson-tr-2 { color: #e5a86b; }
+.lesson-tr-3 { color: var(--c-var); }
+.lesson-note { color: #e5a86b; font-style: normal; }
 
-/* Метка секции */
-.thai-section-label { font-size:.68em; color:var(--c-cmt); letter-spacing:.08em; font-style:italic; margin-bottom:.1em; }
+/* Divider */
+.lesson-divider { height:1px; background:var(--faint); margin:.1em 0; }
 
-/* Слоги */
-.thai-syllables { display:grid; grid-template-columns:1.4em 1fr 1fr .9fr 1.5fr; gap:.2em .3em; align-items:center; }
-.thai-syllable, .thai-syl-head { display:contents; }
-.thai-syl-head > span { font-size:.62em; color:var(--c-cmt); font-style:italic; letter-spacing:.04em; padding-bottom:.15em; }
-.thai-syl-th  { font-size:.88em; color:var(--text); }
-.thai-syl-ru  { font-size:.72em; color:var(--c-str); }
-.thai-syl-pk  { font-size:.72em; color:#e5a86b; }
-.thai-syl-en  { font-size:.72em; color:var(--c-var); }
-.thai-syl-ex  { font-size:.72em; color:var(--muted); font-style:italic; }
-.thai-syl-ex-pk { color:#e5a86b; font-style:normal; }
+/* Section label */
+.lesson-section-label { font-size:.68em; color:var(--c-cmt); letter-spacing:.08em; font-style:italic; margin-bottom:.1em; }
 
-/* Слова */
-.thai-words { display:flex; flex-direction:column; gap:.22em; }
-.thai-word, .thai-word-head { display:grid; grid-template-columns:1.6em 1fr 1fr .9fr 1.2fr; gap:.3em; align-items:center; }
-.thai-word-head > span { font-size:.62em; color:var(--c-cmt); font-style:italic; letter-spacing:.04em; padding-bottom:.1em; }
-.thai-word { padding:.18em .1em; border-radius:3px; transition:background .2s; }
-.thai-word:hover { background:rgba(var(--accent-rgb),.04); }
-.thai-word-th  { font-size:.92em; color:var(--text);  }
-.thai-word-ru  { font-size:.75em; color:var(--c-str); }
-.thai-word-pk  { font-size:.75em; color:#e5a86b; }
-.thai-word-en  { font-size:.75em; color:var(--c-var); }
-.thai-word-tr  { font-size:.75em; color:var(--muted); }
+/* Syllables — one grid, rows via display:contents */
+.lesson-syllables { display:grid; gap:.2em .3em; align-items:center; }
+.lesson-syllable, .lesson-syl-head { display:contents; }
+.lesson-syl-head > span { font-size:.62em; color:var(--c-cmt); font-style:italic; letter-spacing:.04em; padding-bottom:.15em; }
+.lesson-syllable > span { font-size:.72em; }
+.lesson-syllable .lesson-syl-text { font-size:.88em; color:var(--text); }
+.lesson-syl-ex { color:var(--muted); font-style:italic; }
 
-/* Фразы */
-.thai-phrases { display:flex; flex-direction:column; gap:.35em; }
-.thai-phrase { display:flex; flex-direction:column; gap:.1em; padding:.3em .4em; border-left:2px solid var(--faint); border-radius:0 3px 3px 0; transition:border-color .2s; }
-.thai-phrase:hover { border-left-color:rgba(var(--accent-rgb),.4); }
-.thai-phrase-th { font-size:.88em; color:var(--text); }
-.thai-phrase-subs { display:flex; gap:.7em; }
-.thai-phrase-ru { font-size:.72em; color:var(--c-str); }
-.thai-phrase-pk { font-size:.72em; color:#e5a86b; }
-.thai-phrase-en { font-size:.72em; color:var(--c-var); }
-.thai-phrase-tr { font-size:.72em; color:var(--muted); font-style:italic; }
+/* Words — per-row grids so the hover highlight works */
+.lesson-words { display:flex; flex-direction:column; gap:.22em; }
+.lesson-word, .lesson-word-head { display:grid; gap:.3em; align-items:center; }
+/* min-width:0 lets long words stay inside their grid track instead of
+   overflowing onto the transcription/translation columns. */
+.lesson-word-head > span { font-size:.62em; color:var(--c-cmt); font-style:italic; letter-spacing:.04em; padding-bottom:.1em; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+.lesson-word { padding:.18em .1em; border-radius:3px; transition:background .2s; }
+.lesson-word:hover { background:rgba(var(--accent-rgb),.04); }
+.lesson-word > span { font-size:.75em; min-width:0; overflow:hidden; text-overflow:ellipsis; }
+.lesson-word .lesson-word-text { font-size:.92em; color:var(--text); white-space:nowrap; }
+.lesson-word-tr { color:var(--muted); }
+
+/* Phrases */
+.lesson-phrases { display:flex; flex-direction:column; gap:.35em; }
+.lesson-phrase { display:flex; flex-direction:column; gap:.1em; padding:.3em .4em; border-left:2px solid var(--faint); border-radius:0 3px 3px 0; transition:border-color .2s; }
+.lesson-phrase:hover { border-left-color:rgba(var(--accent-rgb),.4); }
+.lesson-phrase-text { font-size:.88em; color:var(--text); }
+.lesson-phrase-subs { display:flex; gap:.7em; }
+.lesson-phrase-subs span { font-size:.72em; }
+.lesson-phrase-tr { font-size:.72em; color:var(--muted); font-style:italic; }
 
 /* =============================================================================
-   ТЕРМИНАЛ — шпаргалка команд (terminal.js)
+   TERMINAL — command cheatsheet (terminal.js)
 ============================================================================= */
 .tm-group { margin-bottom: .55em; }
 .tm-title {
@@ -422,7 +457,7 @@ body {
 .tm-desc { color: var(--muted);  font-size: .76em; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* =============================================================================
-   ГОРЯЧИЕ КЛАВИШИ (hotkeys.js)
+   HOTKEYS (hotkeys.js)
 ============================================================================= */
 .hk-group { margin-bottom: .55em; }
 .hk-title {
@@ -441,7 +476,7 @@ body {
 .hk-desc { color: var(--muted);  font-size: .76em; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* =============================================================================
-   ЧАСТИЦЫ
+   PARTICLES
 ============================================================================= */
 #particles-canvas {
   position: fixed; inset: 0;
@@ -450,7 +485,7 @@ body {
 }
 
 /* =============================================================================
-   ЯЗЫКОВАЯ ПАНЕЛЬ + ШЕСТЕРЁНКА
+   LANGUAGE BAR + GEAR BUTTON
 ============================================================================= */
 .lang-bar {
   position: fixed; bottom: 1.4vh; left: 50%;
@@ -462,17 +497,29 @@ body {
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   z-index: 10;
   box-shadow: 0 4px 16px rgba(0,0,0,.35);
+  overflow: hidden;
+  transition: left .5s cubic-bezier(.22,1,.36,1),
+              bottom .5s cubic-bezier(.22,1,.36,1),
+              transform .5s cubic-bezier(.22,1,.36,1),
+              width .5s cubic-bezier(.22,1,.36,1),
+              height .5s cubic-bezier(.22,1,.36,1),
+              padding .5s cubic-bezier(.22,1,.36,1),
+              border-radius .5s cubic-bezier(.22,1,.36,1);
 }
-.lang-btn {
-  background: transparent; border: none;
-  color: var(--muted); font-family: var(--mono);
-  font-size: .72em; padding: .22em .65em;
-  border-radius: 14px; cursor: pointer;
-  letter-spacing: .04em; transition: color .2s, background .2s;
+/* Restore (menu) button — shown only while collapsed */
+.langbar-restore { display: none; }
+
+/* Collapsed: the menu glides into the bottom-left corner as a small circle */
+.lang-bar.collapsed {
+  left: 1.6vw; bottom: 2.4vh;
+  transform: translateX(0);
+  width: 2.5em; height: 2.5em;
+  padding: 0; border-radius: 50%;
+  justify-content: center;
 }
-.lang-btn:hover  { color:var(--text);   background:rgba(255,255,255,.06); }
-.lang-btn.active { color:var(--accent); background:rgba(var(--accent-rgb),.12); }
-.lang-sep { color: var(--faint); font-size: .7em; opacity: .6; }
+.lang-bar.collapsed #settings-trigger,
+.lang-bar.collapsed .langbar-hide { display: none; }
+.lang-bar.collapsed .langbar-restore { display: flex; align-items: center; justify-content: center; }
 .settings-trigger {
   background: transparent; border: none;
   color: var(--muted); font-family: var(--mono);
@@ -481,9 +528,75 @@ body {
   transition: color .2s, background .2s;
 }
 .settings-trigger:hover { color:var(--accent); background:rgba(var(--accent-rgb),.08); }
+.langbar-hide:hover { color:#e06c75; background:rgba(224,108,117,.10); }
 
 /* =============================================================================
-   ПАНЕЛЬ НАСТРОЕК
+   QUICK-ACCESS APPS MODULE
+============================================================================= */
+.apps-body { padding: var(--panel-pad); }
+.apps-grid { display: flex; flex-wrap: wrap; gap: .5em; }
+.app-tile {
+  display: flex; flex-direction: column; align-items: center; gap: .25em;
+  width: 4.2em; padding: .5em .2em;
+  border: 1px solid var(--faint); border-radius: 6px;
+  cursor: pointer; user-select: none; transition: all .15s ease;
+}
+.app-tile:hover { border-color: rgba(var(--accent-rgb),.4); background: rgba(var(--accent-rgb),.06); }
+.app-icon { font-size: 1.4em; line-height: 1; }
+.app-name {
+  font-size: .66em; color: var(--text); text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+.app-add { border-style: dashed; color: var(--muted); }
+.app-add .app-name { color: var(--muted); }
+
+.apps-addform { display: flex; flex-direction: column; gap: .3em; margin-top: .6em; }
+.apps-addform[hidden] { display: none; }   /* shown only after pressing "+" */
+.apps-input {
+  background: transparent; border: 1px solid var(--faint);
+  color: var(--text); font-family: var(--mono); font-size: .72em;
+  padding: .3em .4em; border-radius: 4px; outline: none;
+  user-select: text; -webkit-user-select: text;
+}
+.apps-input:focus { border-color: var(--accent); }
+.apps-input::placeholder { color: var(--c-cmt); }
+.apps-add-ok {
+  background: transparent; border: 1px solid var(--faint);
+  color: var(--muted); font-family: var(--mono); font-size: .72em;
+  padding: .3em; border-radius: 4px; cursor: pointer; transition: all .15s ease;
+}
+.apps-add-ok:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Right-click context menu */
+.apps-ctxmenu {
+  position: fixed; z-index: 120;
+  background: var(--panel-bg); border: 1px solid var(--panel-border);
+  border-radius: 6px; box-shadow: var(--shadow-panel);
+  padding: .25em; display: flex; flex-direction: column; min-width: 7em;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+}
+.apps-ctx-item {
+  background: transparent; border: none; color: var(--text);
+  font-family: var(--mono); font-size: .74em; text-align: left;
+  padding: .35em .5em; border-radius: 4px; cursor: pointer;
+}
+.apps-ctx-item:hover:not(:disabled) { background: rgba(var(--accent-rgb),.12); color: var(--accent); }
+.apps-ctx-item:disabled { color: var(--faint); cursor: default; }
+
+/* =============================================================================
+   NUMBERS MODULE
+============================================================================= */
+.num-grid { display: grid; gap: .28em .5em; align-items: center; }
+.num-head { font-size: .62em; color: var(--c-cmt); font-style: italic; letter-spacing: .04em; }
+.num-val  { font-size: .95em; color: var(--accent); font-weight: 500; }
+.num-text { font-size: .9em; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.num-grid .lesson-tr-1,
+.num-grid .lesson-tr-2,
+.num-grid .lesson-tr-3 { font-size: .78em; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.num-tr   { font-size: .72em; color: var(--muted); font-style: italic; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* =============================================================================
+   SETTINGS PANEL
 ============================================================================= */
 .settings-overlay {
   position: fixed; inset: 0;
@@ -532,7 +645,7 @@ body {
   scrollbar-width: thin; scrollbar-color: var(--faint) transparent;
 }
 
-/* Строка настройки */
+/* Settings row */
 .settings-row {
   display: flex; align-items: center;
   justify-content: space-between; gap: .5em;
@@ -542,8 +655,8 @@ body {
   white-space: nowrap; flex-shrink: 0;
 }
 
-/* Группа кнопок-опций */
-.settings-opts { display: flex; gap: .2em; }
+/* Option button group (course group may wrap to a second line) */
+.settings-opts { display: flex; gap: .2em; flex-wrap: wrap; justify-content: flex-end; }
 .settings-opt {
   background: transparent; border: 1px solid var(--faint);
   color: var(--muted); font-family: var(--mono);
@@ -556,16 +669,16 @@ body {
   background: rgba(var(--accent-rgb),.12);
 }
 
-/* Разделитель */
+/* Divider */
 .settings-divider { height: 1px; background: var(--faint); margin: .1em 0; }
 
-/* Метка секции */
+/* Section label */
 .settings-section-label {
   font-size: .68em; color: var(--c-cmt);
   letter-spacing: .08em; font-style: italic;
 }
 
-/* Строка переключателя виджета */
+/* Widget toggle row */
 .settings-toggle-row {
   display: flex; align-items: center;
   justify-content: space-between; padding: .15em 0;
@@ -584,7 +697,7 @@ body {
   background: rgba(var(--accent-rgb),.12);
 }
 
-/* Кнопки действий */
+/* Action buttons */
 .settings-action-btn {
   width: 100%; background: transparent;
   border: 1px solid var(--faint); color: var(--muted);
@@ -600,14 +713,16 @@ body {
 }
 .settings-danger:hover { border-color: #e06c75; color: #e06c75; }
 
-/* Версия */
+/* Version */
 .settings-version {
   font-size: .65em; color: var(--c-cmt);
   text-align: center; padding-top: .2em; letter-spacing: .06em;
 }
+.settings-version.clickable { cursor: pointer; transition: color .2s; }
+.settings-version.clickable:hover { color: var(--accent); text-decoration: underline; }
 
 /* =============================================================================
-   РЕЖИМ РЕДАКТИРОВАНИЯ МАКЕТА
+   LAYOUT EDIT MODE
 ============================================================================= */
 body.layout-edit .panel {
   cursor: grab;
@@ -615,7 +730,7 @@ body.layout-edit .panel {
 }
 body.layout-edit .panel:hover {
   outline-color: rgba(var(--accent-rgb),.65);
-  /* Hover в режиме редакт. — тоже через переменную темы */
+  /* Hover in edit mode also uses the theme shadow variable */
   box-shadow:
     0 0 0 1px rgba(var(--accent-rgb),.15) inset,
     var(--shadow-hover);
@@ -623,18 +738,18 @@ body.layout-edit .panel:hover {
 body.layout-edit .panel .panel-header {
   cursor: grab;
 }
-/* Состояние активного перетаскивания */
+/* Active drag state */
 body.is-dragging { cursor: grabbing !important; }
 body.is-dragging * { cursor: grabbing !important; pointer-events: none; }
 body.is-dragging .panel.dragging { pointer-events: auto; }
 .panel.dragging {
   cursor: grabbing;
   outline: 1px solid var(--accent) !important;
-  /* Тень при перетаскивании — тоже через переменную темы */
+  /* Drag shadow also comes from the theme variable */
   box-shadow: 0 0 0 2px rgba(var(--accent-rgb),.3), var(--shadow-drag) !important;
   z-index: 50;
 }
-/* Индикатор режима */
+/* Mode indicator */
 body.layout-edit::after {
   content: 'LAYOUT EDIT — DRAG  /  RESIZE WIDGETS';
   position: fixed; top: 1vh; left: 50%;
@@ -646,7 +761,7 @@ body.layout-edit::after {
 
 /* =============================================================================
    RESPONSIVE BREAKPOINTS
-   1920×1080 → базовые переменные
+   1920×1080 → base variables
    2560×1440 → 1440p
    3440×1440 → ultrawide
    3840×2160 → 4K
@@ -659,9 +774,9 @@ body.layout-edit::after {
     --panel-pad: clamp(14px,  1.2vw,   26px);
     --edge-x: 3.0vw; --edge-y: 4.0vh;
   }
-  .clock-editor { font-size: clamp(16px, 1.15vw, 30px); }
-  .thai-letter  { font-size: 3.6em; }
-  #panel-thai   { width: clamp(300px, 28vw, 560px); }
+  .clock-editor  { font-size: clamp(16px, 1.15vw, 30px); }
+  .lesson-letter { font-size: 3.6em; }
+  #panel-lessons { width: clamp(300px, 28vw, 560px); }
 }
 @media (min-width: 3440px) {
   :root {
@@ -670,8 +785,8 @@ body.layout-edit::after {
     --fs:        clamp(12px,  0.60vw,  20px);
     --edge-x: 2.8vw;
   }
-  .clock-editor { font-size: clamp(16px, 1.0vw, 30px); }
-  #panel-thai   { width: clamp(320px, 24vw, 580px); }
+  .clock-editor  { font-size: clamp(16px, 1.0vw, 30px); }
+  #panel-lessons { width: clamp(320px, 24vw, 580px); }
 }
 @media (min-width: 3800px) {
   :root {
@@ -681,9 +796,9 @@ body.layout-edit::after {
     --panel-pad: clamp(16px,  1.1vw,   30px);
     --panel-r: 14px; --edge-x: 2.8vw; --edge-y: 3.8vh;
   }
-  .clock-editor { font-size: clamp(20px, 0.90vw, 36px); }
-  .thai-letter  { font-size: 4em; }
-  #panel-thai   { width: clamp(360px, 22vw, 620px); }
+  .clock-editor  { font-size: clamp(20px, 0.90vw, 36px); }
+  .lesson-letter { font-size: 4em; }
+  #panel-lessons { width: clamp(360px, 22vw, 620px); }
 }
 
 /* =============================================================================
@@ -730,14 +845,18 @@ body.is-resizing .panel.resizing { pointer-events: auto; }
 /* =============================================================================
    PANEL NO-BACKGROUND VARIANT
 ============================================================================= */
-.panel--no-bg {
+/* Tri-state per-widget background: solid (default) → semi → none. */
+.panel--bg-semi {
+  background: rgba(var(--panel-rgb), calc(var(--panel-alpha) * 0.5)) !important;
+}
+.panel--bg-none {
   background: transparent !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   box-shadow: none !important;
+  /* Keep a faint border so the widget stays locatable when fully transparent */
+  border-color: rgba(var(--accent-rgb),.18) !important;
 }
-/* Keep border visible in no-bg mode */
-.panel--no-bg { border-color: rgba(var(--accent-rgb),.18) !important; }
 
 /* =============================================================================
    SETTINGS — Widget Appearance section
@@ -773,3 +892,30 @@ body.is-resizing .panel.resizing { pointer-events: auto; }
 }
 .settings-city-input:focus { border-color: var(--accent); }
 .settings-city-input::placeholder { color: var(--c-cmt); }
+
+/* =============================================================================
+   SETTINGS — Color pickers (module bg + text)
+============================================================================= */
+.settings-color-ctl { display: flex; align-items: center; gap: .3em; }
+.settings-color-swatch {
+  width: 1.7em; height: 1.5em; padding: 0;
+  background: transparent; border: 1px solid var(--faint);
+  border-radius: 4px; cursor: pointer;
+}
+.settings-color-swatch::-webkit-color-swatch-wrapper { padding: 2px; }
+.settings-color-swatch::-webkit-color-swatch { border: none; border-radius: 2px; }
+.settings-color-hex {
+  width: 5.2em; background: transparent; border: 1px solid var(--faint);
+  color: var(--text); font-family: var(--mono); font-size: .72em;
+  padding: .25em .4em; border-radius: 4px; outline: none;
+  user-select: text; -webkit-user-select: text;
+}
+.settings-color-hex:focus { border-color: var(--accent); }
+.settings-color-hex::placeholder { color: var(--c-cmt); }
+.settings-color-reset {
+  background: transparent; border: 1px solid var(--faint);
+  color: var(--muted); font-family: var(--mono); font-size: .8em;
+  width: 1.7em; height: 1.5em; border-radius: 4px; cursor: pointer;
+  transition: all .15s ease;
+}
+.settings-color-reset:hover { border-color: var(--accent); color: var(--accent); }

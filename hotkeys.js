@@ -130,16 +130,6 @@
       running = false;
       if (timer) { clearTimeout(timer); timer = null; }
       for (var i = 0; i < rows.length; i++) rows[i].classList.remove('hk-hot');
-    },
-
-    /**
-     * Показать/скрыть панель горячих клавиш.
-     * @param {boolean} on
-     */
-    setEnabled: function (on) {
-      var panelEl = document.getElementById('panel-hotkeys');
-      if (panelEl) panelEl.style.display = on ? '' : 'none';
-      if (on) this.start(); else this.stop();
     }
   };
 

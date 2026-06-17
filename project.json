@@ -1,6 +1,6 @@
 {
   "title": "ITWallpaper — Dev Desk",
-  "description": "VS Code / Cursor-inspired live developer dashboard for Wallpaper Engine. Features a live clock, real weather, terminal command cheatsheet, hotkeys reference, and Thai alphabet lessons. Fully customizable themes and layout.",
+  "description": "VS Code / Cursor-inspired live developer dashboard for Wallpaper Engine. Features a live clock, detailed real-time weather, terminal command cheatsheet, Windows hotkeys reference, and data-driven language lessons (Thai, Spanish, English, Russian, Japanese, Korean). Multi-language interface (EN/RU/ES/JA/KO/TH) with separate primary and study language, quick-access app board, custom module/text colors, tri-state backgrounds and duplicable widgets. A numbers/counting module, renamable & duplicable widgets. Fully customizable themes and drag & resize layout. v1.2.",
   "type": "web",
   "file": "index.html",
   "preview": "preview.jpg",
@@ -30,11 +30,25 @@
         "type": "bool",
         "value": true
       },
+      "course": {
+        "order": 3,
+        "text": "Lessons: language to study",
+        "type": "combo",
+        "value": "spanish",
+        "options": [
+          { "label": "Thai",     "value": "thai"     },
+          { "label": "Spanish",  "value": "spanish"  },
+          { "label": "English",  "value": "english"  },
+          { "label": "Russian",  "value": "russian"  },
+          { "label": "Japanese", "value": "japanese" },
+          { "label": "Korean",   "value": "korean"   }
+        ]
+      },
       "city": {
         "order": 10,
-        "text": "Weather city",
+        "text": "Weather city (enter your own)",
         "type": "textinput",
-        "value": "Phuket"
+        "value": ""
       },
       "weatherKey": {
         "order": 11,
@@ -118,9 +132,27 @@
         "type": "bool",
         "value": true
       },
-      "showThaiLesson": {
+      "showLessons": {
         "order": 65,
-        "text": "Show: Thai lesson",
+        "text": "Show: language lessons",
+        "type": "bool",
+        "value": true
+      },
+      "showApps": {
+        "order": 67,
+        "text": "Show: quick-access apps",
+        "type": "bool",
+        "value": true
+      },
+      "showNumbers": {
+        "order": 68,
+        "text": "Show: numbers (counting)",
+        "type": "bool",
+        "value": true
+      },
+      "showLangBar": {
+        "order": 66,
+        "text": "Show: language bar (on-screen)",
         "type": "bool",
         "value": true
       }

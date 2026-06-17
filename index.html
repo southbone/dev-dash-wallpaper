@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ITWallpaper — Dev Desk</title>
+  <title>ITWallpaper — Language Desk</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
@@ -15,10 +15,10 @@
 </head>
 <body>
 
-  <!-- Фоновый canvas для анимации частиц (particles.js) -->
+  <!-- Background canvas for the particle animation (particles.js) -->
   <canvas id="particles-canvas"></canvas>
 
-  <!-- ═══ ВИДЖЕТ: Погода ═══ -->
+  <!-- ═══ WIDGET: Weather ═══ -->
   <div class="panel" id="panel-weather">
     <div class="panel-header" data-i18n="panels.weather"></div>
     <div class="panel-body">
@@ -33,23 +33,54 @@
       </div>
       <div class="w-rows">
         <div class="wrow"><span class="wlabel" data-i18n="weather.feelsLike"></span><span class="wval" id="w-feels">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.tempHL"></span><span class="wval" id="w-hl">—</span></div>
         <div class="wrow"><span class="wlabel" data-i18n="weather.humidity"></span><span class="wval" id="w-hum">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.dewPoint"></span><span class="wval" id="w-dew">—</span></div>
         <div class="wrow"><span class="wlabel" data-i18n="weather.wind"></span><span class="wval" id="w-wind">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.gust"></span><span class="wval" id="w-gust">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.pressure"></span><span class="wval" id="w-press">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.cloud"></span><span class="wval" id="w-cloud">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.uv"></span><span class="wval" id="w-uv">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.visibility"></span><span class="wval" id="w-vis">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.precip"></span><span class="wval" id="w-precip">—</span></div>
+        <div class="wrow"><span class="wlabel" data-i18n="weather.precipProb"></span><span class="wval" id="w-precipprob">—</span></div>
         <div class="wrow"><span class="wlabel" data-i18n="weather.sunrise"></span><span class="wval" id="w-rise">—</span></div>
         <div class="wrow"><span class="wlabel" data-i18n="weather.sunset"></span><span class="wval" id="w-set">—</span></div>
       </div>
     </div>
   </div>
 
-  <!-- ═══ ВИДЖЕТ: Заметки ═══ -->
-  <div class="panel" id="panel-notes">
-    <div class="panel-header" data-i18n="panels.notes"></div>
+  <!-- ═══ WIDGET: Notes ═══ -->
+  <div class="panel" id="panel-notes" data-widget-type="notes">
+    <div class="panel-header">
+      <span class="panel-header-title" data-i18n="panels.notes"></span>
+      <span class="panel-controls">
+        <button class="panel-ctl-btn" data-dup="notes" title="Duplicate" aria-label="Duplicate">+</button>
+      </span>
+    </div>
     <div class="panel-body notes-body">
       <textarea id="notes-area" class="notes-area" spellcheck="false"></textarea>
     </div>
   </div>
 
-  <!-- ═══ ВИДЖЕТ: Часы-редактор ═══ -->
+  <!-- ═══ WIDGET: Quick-access apps ═══ -->
+  <div class="panel panel-apps" id="panel-apps" data-widget-type="apps">
+    <div class="panel-header">
+      <span class="panel-header-title" data-i18n="panels.apps"></span>
+      <span class="panel-controls">
+        <button class="panel-ctl-btn" data-dup="apps" title="Duplicate" aria-label="Duplicate">+</button>
+      </span>
+    </div>
+    <div class="panel-body apps-body" id="apps-body"></div>
+  </div>
+
+  <!-- ═══ WIDGET: Numbers (counting, data-driven) ═══ -->
+  <div class="panel panel-numbers" id="panel-numbers">
+    <div class="panel-header" data-i18n="panels.numbers"></div>
+    <div class="panel-body" id="numbers-body"></div>
+  </div>
+
+  <!-- ═══ WIDGET: Editor clock ═══ -->
   <div class="panel panel-clock" id="panel-clock">
     <div class="panel-header" data-i18n="panels.clock"></div>
     <div class="panel-body clock-body">
@@ -60,47 +91,46 @@
     </div>
   </div>
 
-  <!-- ═══ ВИДЖЕТ: Тайский алфавит ═══ -->
-  <div class="panel panel-thai" id="panel-thai">
-    <div class="panel-header" data-i18n="panels.thai"></div>
-    <div class="thai-nav-bar">
-      <button class="thai-nav-btn" id="thai-prev" aria-label="previous">&#8592;</button>
-      <div class="thai-nav-label" id="thai-nav-label"></div>
-      <button class="thai-nav-btn" id="thai-next" aria-label="next">&#8594;</button>
+  <!-- ═══ WIDGET: Language lessons (data-driven, see languages.js) ═══
+       The header text is set dynamically to the active course name. -->
+  <div class="panel panel-lessons" id="panel-lessons">
+    <div class="panel-header" id="lessons-header"></div>
+    <div class="lesson-nav-bar">
+      <button class="lesson-nav-btn" id="lesson-prev" aria-label="previous">&#8592;</button>
+      <div class="lesson-nav-label" id="lesson-nav-label"></div>
+      <button class="lesson-nav-btn" id="lesson-next" aria-label="next">&#8594;</button>
     </div>
-    <div class="thai-progress">
-      <div class="thai-progress-bar" id="thai-progress-bar"></div>
+    <div class="lesson-progress">
+      <div class="lesson-progress-bar" id="lesson-progress-bar"></div>
     </div>
-    <div class="thai-content" id="thai-content">
-      <div class="thai-loading" data-i18n="thai.loading"></div>
+    <div class="lesson-content" id="lesson-content">
+      <div class="lesson-loading" data-i18n="lessons.loading"></div>
     </div>
   </div>
 
-  <!-- ═══ ВИДЖЕТ: Горячие клавиши ═══ -->
+  <!-- ═══ WIDGET: Hotkeys ═══ -->
   <div class="panel" id="panel-hotkeys">
     <div class="panel-header" data-i18n="panels.hotkeys"></div>
     <div class="panel-body" id="hotkeys-body"></div>
   </div>
 
-  <!-- ═══ ВИДЖЕТ: Терминал ═══ -->
+  <!-- ═══ WIDGET: Terminal ═══ -->
   <div class="panel" id="panel-terminal">
     <div class="panel-header" data-i18n="panels.terminal"></div>
     <div class="panel-body" id="terminal-body"></div>
   </div>
 
-  <!-- ═══ Языковая панель + шестерёнка настроек ═══ -->
+  <!-- ═══ Bottom menu: settings + collapse (collapses to bottom-left corner) ═══ -->
   <div class="lang-bar" id="lang-bar">
-    <button class="lang-btn" data-lang="auto" data-i18n="lang.auto"></button>
-    <button class="lang-btn" data-lang="en">EN</button>
-    <button class="lang-btn" data-lang="ru">RU</button>
-    <span class="lang-sep">│</span>
+    <button class="settings-trigger langbar-restore" id="langbar-restore" aria-label="Open menu" title="Menu">☰</button>
     <button class="settings-trigger" id="settings-trigger" aria-label="Settings" title="Settings">⚙</button>
+    <button class="settings-trigger langbar-hide" id="langbar-hide" aria-label="Hide menu" title="Hide menu">✕</button>
   </div>
 
-  <!-- ═══ Подложка настроек (клик = закрыть) ═══ -->
+  <!-- ═══ Settings backdrop (click = close) ═══ -->
   <div class="settings-overlay" id="settings-overlay"></div>
 
-  <!-- ═══ Панель настроек ═══ -->
+  <!-- ═══ Settings panel ═══ -->
   <div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true">
     <div class="settings-header">
       <span class="settings-title">// settings</span>
@@ -108,17 +138,21 @@
     </div>
     <div class="settings-body">
 
-      <!-- Язык -->
+      <!-- Primary (interface) language -->
       <div class="settings-row">
-        <span class="settings-label" data-i18n="settings.language">Language</span>
+        <span class="settings-label" data-i18n="settings.language">Primary language</span>
         <div class="settings-opts" data-setting="lang">
           <button class="settings-opt" data-value="auto" data-i18n="lang.auto">Auto</button>
           <button class="settings-opt" data-value="en">EN</button>
           <button class="settings-opt" data-value="ru">RU</button>
+          <button class="settings-opt" data-value="es">ES</button>
+          <button class="settings-opt" data-value="ja">JA</button>
+          <button class="settings-opt" data-value="ko">KO</button>
+          <button class="settings-opt" data-value="th">TH</button>
         </div>
       </div>
 
-      <!-- Тема -->
+      <!-- Theme -->
       <div class="settings-row">
         <span class="settings-label" data-i18n="settings.theme">Theme</span>
         <div class="settings-opts" data-setting="theme">
@@ -128,7 +162,7 @@
         </div>
       </div>
 
-      <!-- Формат часов -->
+      <!-- Clock format -->
       <div class="settings-row">
         <span class="settings-label" data-i18n="settings.clockFmt">Clock</span>
         <div class="settings-opts" data-setting="format24h">
@@ -139,7 +173,17 @@
 
       <div class="settings-divider"></div>
 
-      <!-- Видимость виджетов -->
+      <!-- Lessons: course selector (buttons injected from the registry) -->
+      <div class="settings-section-label" data-i18n="settings.lessonsSection">Lessons</div>
+
+      <div class="settings-row">
+        <span class="settings-label" data-i18n="settings.course">Course</span>
+        <div class="settings-opts" data-setting="course" id="settings-course-opts"></div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Widget visibility -->
       <div class="settings-section-label" data-i18n="settings.panels">Show panels</div>
 
       <div class="settings-toggle-row" data-panel="clock">
@@ -162,14 +206,22 @@
         <span class="settings-label" data-i18n="panels.terminal">// terminal</span>
         <button class="settings-toggle-btn" id="toggle-terminal">●</button>
       </div>
-      <div class="settings-toggle-row" data-panel="thai">
-        <span class="settings-label" data-i18n="panels.thai">// thai</span>
-        <button class="settings-toggle-btn" id="toggle-thai">●</button>
+      <div class="settings-toggle-row" data-panel="lessons">
+        <span class="settings-label" data-i18n="panels.lessons">// lessons</span>
+        <button class="settings-toggle-btn" id="toggle-lessons">●</button>
+      </div>
+      <div class="settings-toggle-row" data-panel="apps">
+        <span class="settings-label" data-i18n="panels.apps">// apps</span>
+        <button class="settings-toggle-btn" id="toggle-apps">●</button>
+      </div>
+      <div class="settings-toggle-row" data-panel="numbers">
+        <span class="settings-label" data-i18n="panels.numbers">// numbers</span>
+        <button class="settings-toggle-btn" id="toggle-numbers">●</button>
       </div>
 
       <div class="settings-divider"></div>
 
-      <!-- Внешний вид виджетов -->
+      <!-- Widget appearance -->
       <div class="settings-section-label" data-i18n="settings.appearance">Widget Appearance</div>
 
       <div class="settings-appearance-row">
@@ -191,9 +243,9 @@
         </div>
       </div>
       <div class="settings-appearance-row">
-        <span class="settings-label" data-i18n="panels.thai">// thai</span>
+        <span class="settings-label" data-i18n="panels.lessons">// lessons</span>
         <div class="settings-appearance-btns">
-          <button class="settings-bg-btn" id="bg-thai" data-panel="thai" data-i18n="settings.bg">BG</button>
+          <button class="settings-bg-btn" id="bg-lessons" data-panel="lessons" data-i18n="settings.bg">BG</button>
         </div>
       </div>
       <div class="settings-appearance-row">
@@ -208,21 +260,60 @@
           <button class="settings-bg-btn" id="bg-terminal" data-panel="terminal" data-i18n="settings.bg">BG</button>
         </div>
       </div>
+      <div class="settings-appearance-row">
+        <span class="settings-label" data-i18n="panels.apps">// apps</span>
+        <div class="settings-appearance-btns">
+          <button class="settings-bg-btn" id="bg-apps" data-panel="apps" data-i18n="settings.bg">BG</button>
+        </div>
+      </div>
+      <div class="settings-appearance-row">
+        <span class="settings-label" data-i18n="panels.numbers">// numbers</span>
+        <div class="settings-appearance-btns">
+          <button class="settings-bg-btn" id="bg-numbers" data-panel="numbers" data-i18n="settings.bg">BG</button>
+        </div>
+      </div>
 
       <div class="settings-divider"></div>
 
-      <!-- Погода — город -->
+      <!-- Colors -->
+      <div class="settings-section-label" data-i18n="settings.colors">Colors</div>
+
+      <div class="settings-row">
+        <span class="settings-label" data-i18n="settings.moduleColor">Module color</span>
+        <div class="settings-color-ctl">
+          <input type="color" id="color-panel" class="settings-color-swatch" value="#181a23" />
+          <input type="text" id="color-panel-hex" class="settings-color-hex"
+                 placeholder="#181a23" maxlength="7" autocomplete="off" spellcheck="false" />
+          <button class="settings-color-reset" id="color-panel-reset"
+                  title="Reset" aria-label="Reset">⟲</button>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <span class="settings-label" data-i18n="settings.textColor">Text color</span>
+        <div class="settings-color-ctl">
+          <input type="color" id="color-text" class="settings-color-swatch" value="#c8ccd4" />
+          <input type="text" id="color-text-hex" class="settings-color-hex"
+                 placeholder="#c8ccd4" maxlength="7" autocomplete="off" spellcheck="false" />
+          <button class="settings-color-reset" id="color-text-reset"
+                  title="Reset" aria-label="Reset">⟲</button>
+        </div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Weather — city -->
       <div class="settings-section-label" data-i18n="settings.weatherSection">Weather</div>
 
       <div class="settings-row">
         <span class="settings-label" data-i18n="settings.city">City</span>
         <input type="text" id="settings-city-input" class="settings-city-input"
-               placeholder="Phuket" autocomplete="off" spellcheck="false"/>
+               placeholder="London" autocomplete="off" spellcheck="false"/>
       </div>
 
       <div class="settings-divider"></div>
 
-      <!-- Макет -->
+      <!-- Layout -->
       <div class="settings-section-label" data-i18n="settings.layout">Layout</div>
 
       <button class="settings-action-btn" id="settings-layout-btn">
@@ -235,12 +326,12 @@
         <span data-i18n="settings.resetAll">Reset All Settings</span>
       </button>
 
-      <!-- Версия -->
+      <!-- Version -->
       <div class="settings-version" id="settings-version"></div>
     </div>
   </div>
 
-  <!-- ═══ Модули ITW (порядок: config → audio → weather → particles → terminal → hotkeys → typewriter) ═══ -->
+  <!-- ═══ ITW modules (order: config → audio → weather → particles → terminal → hotkeys → typewriter → languages) ═══ -->
   <script src="config.js"></script>
   <script src="audio.js"></script>
   <script src="weather.js"></script>
@@ -248,11 +339,13 @@
   <script src="terminal.js"></script>
   <script src="hotkeys.js"></script>
   <script src="typewriter.js"></script>
+  <script src="languages.js"></script>
 
-  <!-- Данные тайского алфавита (глобальная переменная THAI_ALPHABET, без fetch) -->
-  <script src="data/thaiAlphabet.js"></script>
+  <!-- Course manifest (global ITW_LANGUAGE_MANIFEST, no fetch);
+       datasets are injected at runtime by ITW.Languages.load() -->
+  <script src="data/languages/manifest.js"></script>
 
-  <!-- Главный оркестратор — загружается последним -->
+  <!-- Main orchestrator — loads last -->
   <script src="script.js"></script>
 
 </body>
